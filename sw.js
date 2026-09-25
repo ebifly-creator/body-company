@@ -1,6 +1,6 @@
 // オフラインでも開けるように、アプリ本体をこの端末に保存する。
 // 更新があれば、次に開いたときに新しい版へ切り替わる。
-const CACHE = "body-company-v9";
+const CACHE = "body-company-v10";
 const ASSETS = ["./", "./index.html", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png", "./icon-maskable-512.png", "./apple-touch-icon.png"];
 
 self.addEventListener("install", (e) => {

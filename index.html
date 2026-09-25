@@ -331,6 +331,84 @@
   .meals .hd2 .kc{ margin-left:auto; color:var(--accent); }
   .meals .hd2 .kc + .wt{ margin-left:12px; }
   @media (max-width:520px){ .meal-head,.meal-row{ grid-template-columns:38px 1fr 80px; } .kcal-sum{ display:grid; grid-template-columns:1fr 1fr; } }
+
+  /* ---- バーチャルジム（PCの画面だけ） ---- */
+  #gym{ display:none; }
+  @media (min-width:1100px){ #gym{ display:block; } }
+  .gym-body{ padding:14px 14px 16px; }
+  .gym-stage{ position:relative; overflow:hidden; border-radius:8px; border:1px solid var(--line); aspect-ratio:1000/380; background:#20262c; }
+  .gym-svg{ display:block; width:100%; height:100%; }
+  .gym-svg text{ font-family:inherit; }
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .gym-svg{ filter:brightness(.8) saturate(.95); } }
+  :root[data-theme="dark"] .gym-svg{ filter:brightness(.8) saturate(.95); }
+  .gym-hit{ position:absolute; border:0; background:transparent; cursor:pointer; padding:0; border-radius:10px; }
+  .gym-hit:hover{ background:rgba(255,255,255,.10); }
+  .gym-bub{ position:absolute; z-index:3; width:max-content; max-width:300px; min-width:190px; padding:10px 13px 11px; background:var(--surface); color:var(--text); border:1px solid var(--line); border-radius:10px; font-size:12.5px; line-height:1.7; box-shadow:0 8px 22px rgba(0,0,0,.28); transform:translate(-50%,-100%) translateY(-10px); opacity:0; transition:opacity .25s ease, left .4s ease, top .4s ease; pointer-events:none; }
+  .gym-bub.on{ opacity:1; }
+  .gym-bub b{ display:block; font-size:12px; letter-spacing:.04em; margin-bottom:2px; }
+  .gym-bub b span{ font-weight:500; color:var(--text-dim); margin-left:6px; }
+  .gym-bub::after{ content:""; position:absolute; left:50%; bottom:-6px; width:10px; height:10px; background:var(--surface); border-right:1px solid var(--line); border-bottom:1px solid var(--line); transform:translateX(-50%) rotate(45deg); }
+  .gym-strip{ display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:12px; }
+  .gym-chip{ display:flex; align-items:center; gap:10px; text-align:left; padding:8px 10px; background:var(--surface-alt); border:1px solid var(--line); border-radius:10px; cursor:pointer; }
+  .gym-chip img{ width:34px; height:34px; border-radius:50%; flex:none; object-fit:cover; box-shadow:0 0 0 2px var(--surface), 0 0 0 3.5px var(--avc, var(--line)); }
+  .gym-chip b{ display:block; font-size:12.5px; line-height:1.3; }
+  .gym-chip small{ display:block; font-size:11px; color:var(--text-dim); line-height:1.35; }
+  .gym-chip[aria-pressed="true"]{ border-color:var(--avc, var(--accent)); background:var(--surface); box-shadow:0 2px 0 color-mix(in srgb, var(--avc, var(--accent)) 45%, transparent); }
+  /* 動き */
+  #gym .arm,#gym .fore,#gym .leg,#gym .bob,#gym .walk,#gym .head{ transform-origin:0 0; }
+  @keyframes g-breath{ 0%,100%{ transform:translateY(0) } 50%{ transform:translateY(-1.6px) } }
+  @keyframes g-bounce{ 0%,100%{ transform:translateY(0) } 50%{ transform:translateY(-3px) } }
+  @keyframes g-sway{ 0%,100%{ transform:translateX(-3px) } 50%{ transform:translateX(3px) } }
+  @keyframes g-curlL{ 0%,12%,100%{ transform:rotate(-3deg) } 45%,58%{ transform:rotate(-118deg) } }
+  @keyframes g-curlR{ 0%,12%,100%{ transform:rotate(3deg) } 45%,58%{ transform:rotate(118deg) } }
+  @keyframes g-reachL{ 0%,100%{ transform:rotate(7deg) } 40%,62%{ transform:rotate(163deg) } }
+  @keyframes g-reachR{ 0%,100%{ transform:rotate(-7deg) } 40%,62%{ transform:rotate(-163deg) } }
+  @keyframes g-typeL{ 0%,100%{ transform:rotate(-64deg) } 50%{ transform:rotate(-76deg) } }
+  @keyframes g-typeR{ 0%,100%{ transform:rotate(64deg) } 50%{ transform:rotate(76deg) } }
+  @keyframes g-walk{ 0%{ transform:translateX(0) scaleX(1) } 44%{ transform:translateX(120px) scaleX(1) } 50%{ transform:translateX(120px) scaleX(-1) } 94%{ transform:translateX(0) scaleX(-1) } 100%{ transform:translateX(0) scaleX(1) } }
+  @keyframes g-stepA{ from{ transform:rotate(-17deg) } to{ transform:rotate(17deg) } }
+  @keyframes g-stepB{ from{ transform:rotate(17deg) } to{ transform:rotate(-17deg) } }
+  @keyframes g-swingA{ from{ transform:rotate(14deg) } to{ transform:rotate(-14deg) } }
+  @keyframes g-swingB{ from{ transform:rotate(-14deg) } to{ transform:rotate(14deg) } }
+  @keyframes g-shake{ 0%,100%{ transform:rotate(-122deg) } 50%{ transform:rotate(-140deg) } }
+  @keyframes g-steam{ 0%{ transform:translateY(0) scale(.6); opacity:0 } 25%{ opacity:.75 } 100%{ transform:translateY(-26px) scale(1.4); opacity:0 } }
+  @keyframes g-nod{ 0%,100%{ transform:rotate(-2deg) } 50%{ transform:rotate(2deg) } }
+  @keyframes g-hop{ 0%,100%{ transform:translateY(0) } 40%{ transform:translateY(-16px) } }
+  @keyframes g-cheerL{ 0%,100%{ transform:rotate(8deg) } 50%{ transform:rotate(155deg) } }
+  @keyframes g-cheerR{ 0%,100%{ transform:rotate(-8deg) } 50%{ transform:rotate(-155deg) } }
+  @keyframes g-sheen{ 0%{ transform:translateX(-240px) } 60%,100%{ transform:translateX(320px) } }
+  @keyframes g-blink{ 0%,49%{ opacity:1 } 50%,100%{ opacity:0 } }
+  @keyframes g-scr{ 0%,100%{ transform:scaleX(.55) } 50%{ transform:scaleX(1) } }
+  #gym .bob{ animation:g-breath 3.4s ease-in-out infinite; }
+  #gym .p-coach .bob{ animation:g-bounce .7s ease-in-out infinite; }
+  #gym .p-coach .walk{ animation:g-walk 14s linear infinite; }
+  #gym .p-coach .legL{ animation:g-stepA .7s ease-in-out infinite alternate; }
+  #gym .p-coach .legR{ animation:g-stepB .7s ease-in-out infinite alternate; }
+  #gym .p-coach .armL{ animation:g-swingA .7s ease-in-out infinite alternate; }
+  #gym .p-coach .armR{ animation:g-swingB .7s ease-in-out infinite alternate; }
+  #gym .ch.speaking .walk,#gym .ch.speaking .walk *{ animation-play-state:paused; }
+  #gym .p-sec .armL{ transform:rotate(30deg); } #gym .p-sec .armR{ transform:rotate(-30deg); }
+  #gym .p-sec .foreL{ animation:g-typeL .34s ease-in-out infinite; }
+  #gym .p-sec .foreR{ animation:g-typeR .34s ease-in-out infinite .17s; }
+  #gym .p-sec .head{ animation:g-nod 4s ease-in-out infinite; }
+  #gym .p-train .foreL{ animation:g-curlL 2.8s ease-in-out infinite; }
+  #gym .p-train .foreR{ animation:g-curlR 2.8s ease-in-out infinite 1.4s; }
+  #gym[data-mode="rest"] .p-train .foreL,#gym[data-mode="rest"] .p-train .foreR{ animation:none; }
+  #gym[data-mode="rest"] .p-train .armL{ animation:g-reachL 6s ease-in-out infinite; }
+  #gym[data-mode="rest"] .p-train .armR{ animation:g-reachR 6s ease-in-out infinite; }
+  #gym[data-mode="rest"] .p-train .bob{ animation:g-sway 6s ease-in-out infinite; }
+  #gym[data-mode="rest"] .p-train .db{ display:none; }
+  #gym .p-nutri .armR{ transform:rotate(-16deg); }
+  #gym .p-nutri .foreR{ animation:g-shake .32s ease-in-out infinite; }
+  #gym .p-nutri .armL{ transform:rotate(12deg); } #gym .p-nutri .foreL{ transform:rotate(-38deg); }
+  #gym .steam{ animation:g-steam 2.4s ease-out infinite; transform-origin:0 0; }
+  #gym .sheen{ animation:g-sheen 7s ease-in-out infinite; }
+  #gym .cur{ animation:g-blink 1s steps(1) infinite; }
+  #gym .scr{ animation:g-scr 2.2s ease-in-out infinite; transform-origin:0 0; }
+  #gym.cheer .ch .bob{ animation:g-hop .55s ease-out 3; }
+  #gym.cheer .ch .armL{ animation:g-cheerL .55s ease-in-out 3 !important; }
+  #gym.cheer .ch .armR{ animation:g-cheerR .55s ease-in-out 3 !important; }
+  #gym.cheer .ch .foreL,#gym.cheer .ch .foreR{ animation:none !important; transform:rotate(0) !important; }
 </style>
 <style>
   :root{ box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px); }
@@ -382,6 +460,18 @@
       <button class="btn ok" data-next="keep">このまま続ける</button>
       <button class="btn" data-next="lighter">少し軽くする</button>
       <button class="btn" data-next="harder">少し強くする</button>
+    </div>
+  </div>
+
+  <div class="panel" id="gym" data-mode="train">
+    <div class="panel-head"><h2>バーチャルジム</h2><span class="sub">PCの画面だけの特別ルーム。AI社員をクリックすると、ひとことを話します</span></div>
+    <div class="panel-body gym-body">
+      <div class="gym-stage" id="gym-stage" role="img" aria-label="AI社員4人が働くバーチャルジムのイラスト">
+        <div id="gym-svg-wrap" style="width:100%;height:100%"></div>
+        <div id="gym-hits" aria-hidden="true"></div>
+        <div class="gym-bub" id="gym-bub" role="status" aria-live="polite"></div>
+      </div>
+      <div class="gym-strip" id="gym-strip"></div>
     </div>
   </div>
 
@@ -884,7 +974,7 @@
   }
   function rankUp(r){
     toast("昇進しました。新しい役職は「" + r[1] + "」です");
-    confetti();
+    confetti(); gymReact("rank");
     var el = $("rank"); el.classList.remove("pop"); void el.offsetWidth; el.classList.add("pop");
   }
   function confetti(){
@@ -1054,6 +1144,162 @@
       return '<div class="st"><img class="av" style="--avc:' + p.color + '" width="52" height="52" alt="' + esc(p.person) + '（' + p.role + '）" src="' + AV[p.id] + '"><div class="st-body">' +
         '<div class="st-name"><b>' + p.person + '</b><span>' + p.role + '</span></div><div class="bubble">' + esc(m[p.id]) + (src ? '<span class="src">' + esc(src) + '</span>' : '') + '</div></div></div>';
     }).join("");
+  }
+
+
+  // ===== バーチャルジム（PCの画面だけで表示） =====
+  var GYM = { built:false, cur:"sec", timer:null, hold:false, cheerT:null, custom:null,
+    pos:{ sec:[17.5,54], coach:[39,47], train:[61,47], nutri:[86,47] },
+    hits:{ sec:[9.5,50,9.5,46], coach:[29,47,20,49], train:[55,47,10,49], nutri:[81.5,47,9,49] } };
+  var GYM_SKIN = { sec:"#efc3a5", coach:"#e2b28f", train:"#d69f77", nutri:"#f2c8ad" };
+  var GYM_DB = '<g class="db"><rect x="-11" y="21" width="22" height="4" rx="2" fill="#2a2f35"/><rect x="-14" y="16" width="6" height="14" rx="2" fill="#1c2126"/><rect x="8" y="16" width="6" height="14" rx="2" fill="#1c2126"/></g>';
+  function gymPerson(id, x, y, o){
+    var p = STAFF.filter(function(s){ return s.id === id; })[0], c = p.color, sk = GYM_SKIN[id], pants = o.pants || "#2b3542";
+    function arm(s){
+      var side = s < 0 ? "L" : "R", ex = (o.hand && o.hand[side]) || "";
+      return '<g transform="translate(' + (s * 24) + ',-90)"><g class="arm arm' + side + '"><rect x="-5.5" y="-3" width="11" height="28" rx="5.5" fill="' + c + '"/>' +
+        '<g transform="translate(0,24)"><g class="fore fore' + side + '"><rect x="-4.6" y="-2" width="9.2" height="24" rx="4.6" fill="' + sk + '"/><circle cy="24" r="5.4" fill="' + sk + '"/>' + ex + '</g></g></g></g>';
+    }
+    function leg(s){
+      var side = s < 0 ? "L" : "R";
+      return '<g transform="translate(' + (s * 9) + ',-50)"><g class="leg leg' + side + '"><rect x="-6.5" y="0" width="13" height="46" rx="6" fill="' + pants + '"/><rect x="-8.5" y="41" width="18" height="9" rx="4.5" fill="#1d2329"/></g></g>';
+    }
+    return '<g id="ch-' + id + '" class="ch p-' + id + '" transform="translate(' + x + ',' + y + ')">' +
+      '<ellipse cx="0" cy="2" rx="32" ry="6" fill="#000" opacity=".2"/>' +
+      '<g class="walk"><g class="bob">' + (o.seated ? "" : leg(-1) + leg(1)) +
+      '<path d="M-24 -92 Q-24 -99 -16 -99 H16 Q24 -99 24 -92 L21 -50 Q21 -45 16 -45 H-16 Q-21 -45 -21 -50 Z" fill="' + c + '"/>' +
+      '<path d="M-24 -92 Q-24 -99 -16 -99 H0 V-45 H-16 Q-21 -45 -21 -50 Z" fill="#fff" opacity=".12"/>' +
+      (o.torso || "") + '<rect x="-6" y="-106" width="12" height="12" rx="4" fill="' + sk + '"/><rect x="-6" y="-100" width="12" height="6" fill="#000" opacity=".12"/>' +
+      arm(-1) + arm(1) +
+      '<g class="head"><g transform="translate(0,-124)"><ellipse rx="31" ry="37" fill="' + sk + '"/><image href="' + AV[id] + '" x="-50" y="-45" width="100" height="100" clip-path="url(#gym-hc)"/><ellipse rx="30" ry="36" fill="none" stroke="' + c + '" stroke-width="2.5"/></g></g>' +
+      '</g></g></g>';
+  }
+  function gymScene(){
+    var d = '';
+    d += '<defs>' +
+      '<linearGradient id="gym-wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#cfd8dc"/><stop offset="1" stop-color="#b4c0c6"/></linearGradient>' +
+      '<linearGradient id="gym-floor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b98d5e"/><stop offset="1" stop-color="#8f6a42"/></linearGradient>' +
+      '<linearGradient id="gym-sky" x1="0" y1="0" x2="0" y2="1"><stop id="gym-s1" offset="0" stop-color="#8fc7ee"/><stop id="gym-s2" offset="1" stop-color="#e2f2fb"/></linearGradient>' +
+      '<linearGradient id="gym-mir" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e9f1f5"/><stop offset="1" stop-color="#b7cad4"/></linearGradient>' +
+      '<clipPath id="gym-hc"><ellipse rx="30" ry="36"/></clipPath><clipPath id="gym-mc"><rect x="400" y="46" width="200" height="182" rx="4"/></clipPath>' +
+      '<clipPath id="gym-wc"><rect x="44" y="52" width="150" height="140" rx="3"/></clipPath>' +
+      '<radialGradient id="gym-lamp" cx=".5" cy="0" r="1"><stop offset="0" stop-color="#fff6d8" stop-opacity=".55"/><stop offset="1" stop-color="#fff6d8" stop-opacity="0"/></radialGradient></defs>';
+    // 壁・床
+    d += '<rect width="1000" height="290" fill="url(#gym-wall)"/><rect y="270" width="1000" height="22" fill="#9aa8b0"/><rect y="290" width="1000" height="90" fill="url(#gym-floor)"/>';
+    for (var i = 0; i < 18; i++) d += '<line x1="' + (i * 62 - 10) + '" y1="290" x2="' + (i * 80 - 150) + '" y2="380" stroke="#000" opacity=".09"/>';
+    d += '<line x1="0" y1="290" x2="1000" y2="290" stroke="#000" opacity=".18"/>';
+    // 窓
+    d += '<rect x="36" y="44" width="166" height="156" rx="5" fill="#eef2f4"/><g clip-path="url(#gym-wc)"><rect x="44" y="52" width="150" height="140" fill="url(#gym-sky)"/><circle id="gym-sun" cx="150" cy="96" r="16" fill="#fff3b0"/>' +
+      '<g id="gym-stars" opacity="0"><circle cx="70" cy="80" r="1.4" fill="#fff"/><circle cx="110" cy="66" r="1.2" fill="#fff"/><circle cx="170" cy="120" r="1.3" fill="#fff"/><circle cx="90" cy="130" r="1" fill="#fff"/></g>' +
+      '<path d="M44 192 V150 h14 v-22 h16 v30 h12 v-44 h18 v44 h14 v-26 h16 v26 h12 v-38 h20 v38 h-122z" fill="#5c6f80" opacity=".55" transform="translate(0,0)"/><path d="M44 192 V168 h28 v-14 h20 v14 h30 v-20 h18 v20 h20 v-10 h34 V192z" fill="#41525f" opacity=".7"/></g>' +
+      '<line x1="119" y1="52" x2="119" y2="192" stroke="#eef2f4" stroke-width="5"/><line x1="44" y1="122" x2="194" y2="122" stroke="#eef2f4" stroke-width="5"/>';
+    // 鏡
+    d += '<rect x="392" y="38" width="216" height="198" rx="6" fill="#8b979e"/><rect x="400" y="46" width="200" height="182" rx="4" fill="url(#gym-mir)"/><g clip-path="url(#gym-mc)"><rect class="sheen" x="380" y="30" width="46" height="220" fill="#fff" opacity=".35" transform="skewX(-18)"/></g>' +
+      '<path d="M400 190 L600 130" stroke="#fff" opacity=".22" stroke-width="2"/>';
+    // ホワイトボード
+    d += '<rect x="222" y="60" width="150" height="120" rx="4" fill="#f8fafb" stroke="#8b979e" stroke-width="4"/>' +
+      '<text id="gym-wb1" x="234" y="82" font-size="11" fill="#5b6a73" font-weight="700"></text><text id="gym-wb2" x="234" y="106" font-size="13" fill="#17232b" font-weight="900"></text><text id="gym-wb3" x="234" y="130" font-size="11" fill="#5b6a73"></text>' +
+      '<rect x="234" y="146" width="126" height="9" rx="4.5" fill="#dfe6e9"/><rect id="gym-wbar" x="234" y="146" width="10" height="9" rx="4.5" fill="#d5372a"/><text id="gym-wb4" x="234" y="172" font-size="10" fill="#5b6a73"></text>';
+    // 時計・看板・器具
+    d += '<g transform="translate(676,92)"><circle r="32" fill="#f5f7f8" stroke="#3a4650" stroke-width="5"/>';
+    for (var k = 0; k < 12; k++) d += '<line x1="0" y1="-25" x2="0" y2="-29" stroke="#3a4650" stroke-width="2" transform="rotate(' + (k * 30) + ')"/>';
+    d += '<line id="gym-hh" x1="0" y1="0" x2="0" y2="-16" stroke="#17232b" stroke-width="4" stroke-linecap="round"/><line id="gym-mh" x1="0" y1="0" x2="0" y2="-24" stroke="#17232b" stroke-width="2.5" stroke-linecap="round"/><circle r="3" fill="#d5372a"/></g>';
+    d += '<rect x="640" y="146" width="112" height="34" rx="4" fill="#17232b"/><text x="696" y="168" text-anchor="middle" font-size="13" font-weight="900" fill="#f2f6f5" letter-spacing="2">静かに、確実に</text>';
+    // ダンベルラック
+    d += '<g transform="translate(500,0)"><rect x="0" y="206" width="84" height="6" fill="#3a4650"/><rect x="0" y="252" width="84" height="6" fill="#3a4650"/><rect x="4" y="206" width="6" height="88" fill="#3a4650"/><rect x="74" y="206" width="6" height="88" fill="#3a4650"/>';
+    for (var q = 0; q < 4; q++) { d += '<g transform="translate(' + (16 + q * 16) + ',0)"><rect x="-5" y="192" width="10" height="14" rx="3" fill="#1f262c"/><rect x="-3" y="238" width="6" height="14" rx="2" fill="#39434b"/><rect x="-5" y="238" width="10" height="4" rx="2" fill="#1f262c"/></g>'; }
+    d += '<rect x="0" y="294" width="84" height="4" fill="#000" opacity=".2"/></g>';
+    // 秘書ゾーン：椅子→人→机
+    d += '<rect x="104" y="238" width="72" height="70" rx="12" fill="#4a5560"/>';
+    d += gymPerson("sec", 140, 351, { seated:true, torso:'<rect x="-9" y="-88" width="18" height="10" rx="2" fill="#f4f1ea" opacity=".9"/>' });
+    d += '<rect x="30" y="300" width="228" height="56" fill="#b98b5a"/><rect x="30" y="300" width="228" height="7" fill="#d6ad7c"/><rect x="30" y="349" width="228" height="7" fill="#000" opacity=".16"/>' +
+      '<rect x="112" y="276" width="56" height="26" rx="3" fill="#8f9aa2"/><circle cx="140" cy="289" r="3.5" fill="#dfe6e9"/><rect x="106" y="300" width="68" height="4" rx="2" fill="#6e7a83"/>' +
+      '<rect x="196" y="236" width="56" height="42" rx="3" fill="#20272d"/><rect x="200" y="240" width="48" height="34" fill="#0f2b27"/>' +
+      '<g transform="translate(204,246)"><rect class="scr" width="30" height="3" fill="#57d9ac"/><rect y="7" width="20" height="3" fill="#57d9ac" opacity=".7"/><rect y="14" width="34" height="3" fill="#57d9ac" opacity=".55"/><rect class="cur" x="22" y="20" width="5" height="7" fill="#9ce8c6"/></g>' +
+      '<rect x="220" y="278" width="8" height="22" fill="#20272d"/><rect x="60" y="288" width="13" height="13" rx="2" fill="#f4f1ea"/><path d="M73 291 q5 0 5 5 q0 5 -5 5" stroke="#f4f1ea" stroke-width="2" fill="none"/>';
+    // コーチのマット
+    d += '<rect x="286" y="338" width="204" height="12" rx="6" fill="#2f6d61"/><rect x="286" y="338" width="204" height="4" rx="2" fill="#fff" opacity=".2"/>';
+    d += gymPerson("coach", 336, 342, { hand:{ R:'<g transform="translate(0,22) rotate(-8)"><rect x="-10" y="-2" width="22" height="30" rx="2" fill="#f7f4ec" stroke="#8b979e"/><rect x="-6" y="4" width="14" height="2" fill="#8b979e"/><rect x="-6" y="10" width="14" height="2" fill="#8b979e"/><rect x="-6" y="16" width="9" height="2" fill="#8b979e"/></g>' } });
+    // インクラインベンチ
+    d += '<g transform="translate(690,0)"><path d="M6 318 L58 286 L74 298 L30 330 Z" fill="#2b3542"/><path d="M6 318 L58 286" stroke="#4a5866" stroke-width="3"/><rect x="26" y="330" width="60" height="8" rx="4" fill="#2b3542"/><rect x="34" y="336" width="6" height="12" fill="#1c2329"/><rect x="74" y="336" width="6" height="12" fill="#1c2329"/></g>';
+    d += gymPerson("train", 606, 344, { hand:{ L:GYM_DB, R:GYM_DB }, pants:"#1f2a36" });
+    // 栄養士：カウンター
+    d += gymPerson("nutri", 866, 338, { hand:{ R:'<g transform="translate(0,20)"><rect x="-6" y="-2" width="12" height="26" rx="3" fill="#f4f1ea" stroke="#c9d1d5"/><rect x="-6" y="8" width="12" height="7" fill="#d9662c"/><rect x="-5" y="-6" width="10" height="5" rx="2" fill="#5b6a73"/></g>' }, pants:"#3a4650", torso:'<rect x="-14" y="-88" width="10" height="7" rx="1.5" fill="#fff" opacity=".9"/>' });
+    d += '<rect x="772" y="298" width="220" height="60" fill="#d9c7a8"/><rect x="772" y="294" width="220" height="8" fill="#efe3cc"/><rect x="772" y="350" width="220" height="8" fill="#000" opacity=".16"/><line x1="882" y1="304" x2="882" y2="350" stroke="#000" opacity=".12"/>' +
+      '<g transform="translate(792,294)"><ellipse cx="18" cy="0" rx="18" ry="4" fill="#000" opacity=".12"/><path d="M0 -2 q18 16 36 0 z" fill="#f5efe4"/><circle cx="9" cy="-6" r="6" fill="#d5372a"/><circle cx="20" cy="-8" r="6" fill="#f0a531"/><circle cx="28" cy="-5" r="5" fill="#7ab648"/></g>' +
+      '<g transform="translate(936,294)"><rect x="-2" y="-30" width="34" height="28" rx="3" fill="#6e7a83"/><rect x="-6" y="-2" width="42" height="4" rx="2" fill="#4a5560"/><rect x="34" y="-22" width="10" height="4" rx="2" fill="#4a5560"/>' +
+      '<circle class="steam" cx="10" cy="-34" r="4" fill="#fff" style="animation-delay:.8s"/><circle class="steam" cx="22" cy="-34" r="4" fill="#fff" style="animation-delay:1.6s"/></g>' +
+      '<g transform="translate(906,294)"><rect x="-4" y="-6" width="26" height="6" rx="2" fill="#39434b"/><path d="M-2 -6 L2 -38 H18 L22 -6 Z" fill="#cfe7ee" opacity=".7"/><rect x="0" y="-14" width="20" height="8" fill="#e8663d" opacity=".8"/></g>';
+    // 観葉植物
+    d += '<g transform="translate(276,300)"><rect x="-13" y="0" width="26" height="24" rx="4" fill="#c56a3a"/><path d="M0 0 C-22 -18 -26 -40 -8 -50 C-10 -34 -6 -18 0 0z" fill="#3f8a55"/><path d="M0 0 C22 -20 28 -38 10 -52 C12 -34 6 -16 0 0z" fill="#4da565"/><path d="M0 0 C-4 -22 4 -40 2 -58 C10 -40 6 -18 0 0z" fill="#358048"/></g>';
+    d += '<rect width="1000" height="380" fill="url(#gym-lamp)" opacity=".55"/>';
+    return '<svg class="gym-svg" viewBox="0 0 1000 380" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' + d + '</svg>';
+  }
+  var GYM_ACT = { sec:"予定を整理しています", coach:"巡回して声をかけています", train:"ダンベルカールを実演中", nutri:"プロテインを調合中" };
+  function gymTod(){
+    var h = new Date().getHours();
+    if (h < 5 || h >= 19) return { a:"#141f38", b:"#34497a", sun:"#f3efcf", x:150, y:92, star:1 };
+    if (h < 8)  return { a:"#f5b98f", b:"#a9c6e6", sun:"#ffd9a0", x:78, y:150, star:0 };
+    if (h < 16) return { a:"#8fc7ee", b:"#e2f2fb", sun:"#fff3b0", x:150, y:88, star:0 };
+    return { a:"#f1a778", b:"#9a86bd", sun:"#ffcf8a", x:160, y:140, star:0 };
+  }
+  function gymSpeak(id, custom){
+    var s = STAFF.filter(function(q){ return q.id === id; })[0]; if (!s) return;
+    GYM.cur = id; GYM.custom = custom || null;
+    var msg = custom || staffMessages()[id];
+    var b = $("gym-bub"); if (!b) return;
+    b.innerHTML = '<b>' + esc(s.person) + '<span>' + esc(s.role) + '</span></b>' + esc(msg);
+    b.style.left = GYM.pos[id][0] + "%"; b.style.top = GYM.pos[id][1] + "%"; b.classList.add("on");
+    STAFF.forEach(function(q){ var g = $("ch-" + q.id); if (g) g.classList.toggle("speaking", q.id === id); });
+    Array.prototype.forEach.call(document.querySelectorAll(".gym-chip"), function(el){ el.setAttribute("aria-pressed", String(el.getAttribute("data-id") === id)); });
+  }
+  function gymNext(){
+    var g = $("gym"); if (!g || !g.offsetParent || GYM.hold || document.hidden || GYM.custom) return;
+    var ids = STAFF.map(function(s){ return s.id; });
+    gymSpeak(ids[(ids.indexOf(GYM.cur) + 1) % ids.length]);
+  }
+  function gymReact(kind){
+    var g = $("gym"); if (!g) return;
+    g.classList.remove("cheer"); void g.offsetWidth; g.classList.add("cheer");
+    var t = { done:"打刻を確認しました。今日もおつかれさまです。", mini:"5分でも、ちゃんと1回です。えらいです。", rank:"昇進、おめでとうございます。" }[kind] || "ナイスです。";
+    gymSpeak("coach", t);
+    clearTimeout(GYM.cheerT);
+    GYM.cheerT = setTimeout(function(){ g.classList.remove("cheer"); GYM.custom = null; gymSpeak(GYM.cur); }, 6500);
+  }
+  function gymClock(){
+    var n = new Date(), h = $("gym-hh"), m = $("gym-mh"); if (!h || !m) return;
+    h.setAttribute("transform", "rotate(" + (((n.getHours() % 12) + n.getMinutes() / 60) * 30) + ")");
+    m.setAttribute("transform", "rotate(" + (n.getMinutes() * 6) + ")");
+  }
+  function renderGym(){
+    var g = $("gym"); if (!g) return;
+    if (!GYM.built) {
+      GYM.built = true;
+      $("gym-svg-wrap").innerHTML = gymScene();
+      $("gym-hits").innerHTML = STAFF.map(function(s){ var h = GYM.hits[s.id];
+        return '<button type="button" class="gym-hit" tabindex="-1" data-id="' + s.id + '" style="left:' + h[0] + '%;top:' + h[1] + '%;width:' + h[2] + '%;height:' + h[3] + '%"></button>'; }).join("");
+      Array.prototype.forEach.call(g.querySelectorAll(".gym-hit"), function(el){ el.addEventListener("click", function(){ GYM.custom = null; gymSpeak(el.getAttribute("data-id")); }); });
+      var st = $("gym-stage"); st.addEventListener("mouseenter", function(){ GYM.hold = true; }); st.addEventListener("mouseleave", function(){ GYM.hold = false; });
+      GYM.timer = setInterval(gymNext, 9000); setInterval(gymClock, 30000);
+    }
+    var d = BYDATE[TODAY], rest = d ? MENUS[d.dow].kind === "rest" : false;
+    g.setAttribute("data-mode", rest ? "rest" : "train");
+    GYM_ACT.train = rest ? "ストレッチを実演中" : "ダンベルカールを実演中";
+    $("gym-strip").innerHTML = STAFF.map(function(s){
+      return '<button type="button" class="gym-chip" data-id="' + s.id + '" style="--avc:' + s.color + '" aria-pressed="' + (s.id === GYM.cur) + '"><img alt="" src="' + AV[s.id] + '"><span><b>' + esc(s.person) + '</b><small>' + esc(s.role) + '｜' + esc(GYM_ACT[s.id]) + '</small></span></button>';
+    }).join("");
+    Array.prototype.forEach.call($("gym-strip").querySelectorAll(".gym-chip"), function(el){ el.addEventListener("click", function(){ GYM.custom = null; gymSpeak(el.getAttribute("data-id")); }); });
+    var tod = gymTod();
+    $("gym-s1").setAttribute("stop-color", tod.a); $("gym-s2").setAttribute("stop-color", tod.b);
+    var sun = $("gym-sun"); sun.setAttribute("fill", tod.sun); sun.setAttribute("cx", tod.x); sun.setAttribute("cy", tod.y); $("gym-stars").setAttribute("opacity", tod.star);
+    var rec = d ? state.days[d.date] : null, c = d ? weekCounts(d.w) : null;
+    $("gym-wb1").textContent = d ? (d.md + "（" + DOW[d.dow] + "）  第" + d.w + "週") : "開始前";
+    $("gym-wb2").textContent = d ? MENUS[d.dow].title.slice(0, 10) : "準備期間";
+    $("gym-wb3").textContent = d ? (rest ? "今日は休養日" : (rec ? "本日：" + STATUS_LABEL[rec.status] : "本日：まだ打刻なし")) : "9/28 から出勤開始";
+    $("gym-wb4").textContent = c ? ("今週のフル完了 " + c.done + " / " + c.planned + " 回") : "";
+    $("gym-wbar").setAttribute("width", c ? Math.max(10, Math.min(126, 126 * c.done / Math.max(1, c.planned))) : 10);
+    gymClock();
+    gymSpeak(GYM.cur, GYM.custom);
   }
 
   // ===== 描画：タイムカード =====
@@ -1303,7 +1549,7 @@
   }
 
   function renderAll(){
-    renderTop(); renderKpi(); renderGate(); renderMission(); renderStaff(); renderLogForm(); renderKcal(); renderChart(); renderMeals(); renderGoal(); renderGrid(); renderReviewMeta(); renderLog(); renderEvidence(); renderSync();
+    renderTop(); renderKpi(); renderGate(); renderMission(); renderStaff(); renderLogForm(); renderKcal(); renderChart(); renderMeals(); renderGoal(); renderGrid(); renderReviewMeta(); renderLog(); renderEvidence(); renderGym(); renderSync();
   }
 
   // ===== 操作 =====
@@ -1312,7 +1558,7 @@
     saveDay(date, { status:status, note:$("note-input").value.trim(), at:Date.now() }).then(function(){
       var ok = ["打刻しました。今日の自分、えらい","やったね。筋肉がよろこんでます","いい流れです。この調子でいきましょう","打刻完了。おつかれさまでした"];
       toast(status === "done" ? ok[Math.floor(Math.random() * ok.length)] : status === "mini" ? "5分だけでも、ちゃんと1回です" : "お休みも作戦のうち。次に戻れれば大丈夫です");
-      if (status === "done" || status === "mini") confetti();
+      if (status === "done" || status === "mini") { confetti(); gymReact(status); }
     });
   }
   $("b-done").addEventListener("click", function(){ record("done"); });
