@@ -1,1 +1,1364 @@
-index.html / sw.js / manifest.webmanifest / icon-192.png / icon-512.png / icon-maskable-512.png / apple-touch-icon.png
+<img width="180" height="180" alt="apple-touch-icon" src="https://github.com/user-attachments/assets/6805283d-ac30-4739-9ebc-77d2e343fd75" />
+
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#eef1f5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d1220" media="(prefers-color-scheme: dark)">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+[index.html](https://github.com/user-attachments/files/32657226/index.html)
+<img width="512" height="512" alt="icon-maskable-512" src="https://github.com/user-attachments/assets/454bc5cd-de2a-498c-86e3-982d407a5fd8" />
+<img width="512" height="512" alt="icon-512" src="https://github.com/user-attachments/assets/2f17ab13-92da-49fc-aef6-7d6661dfecbf" />
+<img width="192" height="192" alt="icon-192" src="https://github.com/user-attachments/assets/ecce2bbb-f9ec-47e7-a6ac-821880ed3486" />
+
+<meta name="apple-mobile-web-app-title" content="ボディ改造">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>ボディ改造カンパニー</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+  :root{
+    --bg:#eef1f5; --surface:#ffffff; --surface-alt:#e4e9f0;
+    --text:#1a2233; --text-dim:#5b6478;
+    --accent:#d9662c; --accent-soft:#f6e1d1;
+    --accent-2:#2c5f8a; --accent-2-soft:#dce8f2;
+    --success:#2f8a5b; --success-soft:#dcefe4;
+    --warn:#b7791f; --warn-soft:#f6ead0;
+    --idle:#8892a6; --idle-soft:#e6e9ef;
+    --line:#c7cede;
+    --shadow:0 1px 2px rgba(26,34,51,.06), 0 8px 24px rgba(26,34,51,.06);
+    --on-accent:#ffffff;
+    color-scheme:light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0d1220; --surface:#161d2e; --surface-alt:#1f2740;
+      --text:#e7ebf5; --text-dim:#98a2ba;
+      --accent:#f0a35f; --accent-soft:#3a2718;
+      --accent-2:#6fa8d6; --accent-2-soft:#1c3247;
+      --success:#5cb684; --success-soft:#183a2a;
+      --warn:#e0b458; --warn-soft:#3a2f14;
+      --idle:#79839c; --idle-soft:#232c42;
+      --line:#2b3552;
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+      --on-accent:#1a1208;
+      color-scheme:dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0d1220; --surface:#161d2e; --surface-alt:#1f2740;
+    --text:#e7ebf5; --text-dim:#98a2ba;
+    --accent:#f0a35f; --accent-soft:#3a2718;
+    --accent-2:#6fa8d6; --accent-2-soft:#1c3247;
+    --success:#5cb684; --success-soft:#183a2a;
+    --warn:#e0b458; --warn-soft:#3a2f14;
+    --idle:#79839c; --idle-soft:#232c42;
+    --line:#2b3552;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+    --on-accent:#1a1208;
+    color-scheme:dark;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    background:var(--bg); color:var(--text);
+    font-family:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+    font-size:14px; line-height:1.6;
+    padding-inline:16px; padding-block:24px 56px;
+  }
+  .mono{ font-family:"JetBrains Mono","SFMono-Regular",Consolas,monospace; font-variant-numeric:tabular-nums; }
+  button,input,textarea,select{ font-family:inherit; font-size:inherit; color:inherit; }
+  button:focus-visible,input:focus-visible,textarea:focus-visible{ outline:2px solid var(--accent-2); outline-offset:2px; }
+  @media (prefers-reduced-motion: reduce){ *{ animation-duration:.001ms !important; transition-duration:.001ms !important; } }
+
+  .page{ max-width:1040px; margin:0 auto; display:flex; flex-direction:column; gap:16px; }
+  .panel{ background:var(--surface); border:1px solid var(--line); border-radius:14px; box-shadow:var(--shadow); }
+  .panel-head{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; flex-wrap:wrap; padding:14px 18px; border-bottom:1px solid var(--line); }
+  .panel-head h2{ margin:0; font-size:13.5px; font-weight:700; color:var(--text-dim); letter-spacing:.04em; }
+  .panel-head .sub{ font-size:11.5px; color:var(--text-dim); }
+  .panel-body{ padding:16px 18px; }
+
+  /* ---- header ---- */
+  .topbar{ display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px 20px; padding:16px 20px; }
+  .brand{ display:flex; align-items:center; gap:12px; }
+  .mark{ width:40px; height:40px; border-radius:10px; flex:none; background:linear-gradient(135deg,var(--accent),var(--accent-2)); color:#fff; font-weight:900; font-size:16px; display:flex; align-items:center; justify-content:center; }
+  .names{ display:flex; flex-direction:column; line-height:1.3; }
+  .names .co{ font-weight:900; font-size:16px; letter-spacing:.02em; }
+  .names .tag{ font-size:11.5px; color:var(--text-dim); }
+  .today-box{ text-align:right; }
+  .today-box .label{ font-size:11px; color:var(--text-dim); }
+  .today-box .val{ font-weight:700; font-size:15px; }
+  .pill{ display:inline-flex; align-items:center; gap:6px; background:var(--idle-soft); color:var(--idle); border-radius:999px; padding:3px 11px; font-size:12px; font-weight:700; }
+  .pill.ok{ background:var(--success-soft); color:var(--success); }
+  .pill.busy{ background:var(--accent-2-soft); color:var(--accent-2); }
+  .pill.warn{ background:var(--warn-soft); color:var(--warn); }
+  .pill .dot{ width:6px; height:6px; border-radius:50%; background:currentColor; }
+
+  /* ---- stages ---- */
+  .stages{ display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+  .stage{ display:flex; align-items:center; gap:6px; font-size:11.5px; font-weight:700; color:var(--idle); white-space:nowrap; }
+  .stage .num{ width:18px; height:18px; border-radius:50%; background:var(--idle-soft); color:var(--idle); display:flex; align-items:center; justify-content:center; font-size:10px; }
+  .stage.done{ color:var(--success); } .stage.done .num{ background:var(--success); color:#fff; }
+  .stage.current{ color:var(--accent); } .stage.current .num{ background:var(--accent); color:var(--on-accent); }
+  .stage-sep{ width:14px; height:1px; background:var(--line); }
+
+  /* ---- KPI ---- */
+  .kpi-panel{ display:flex; flex-wrap:wrap; align-items:center; gap:16px 28px; padding:16px 20px; }
+  .kpi-stats{ display:flex; flex-wrap:wrap; gap:18px 26px; }
+  .kpi{ display:flex; flex-direction:column; gap:2px; min-width:72px; }
+  .kpi .kv{ font-size:22px; font-weight:900; line-height:1.2; }
+  .kpi .kl{ font-size:11px; font-weight:700; color:var(--text-dim); }
+  .goal{ flex:1; min-width:240px; display:flex; flex-direction:column; gap:6px; }
+  .goal .row{ display:flex; justify-content:space-between; font-size:12px; font-weight:700; color:var(--text-dim); }
+  .track{ height:10px; border-radius:999px; background:var(--surface-alt); overflow:hidden; }
+  .fill{ height:100%; width:0; border-radius:999px; background:linear-gradient(90deg,var(--accent-2),var(--accent)); transition:width .6s ease; }
+
+  /* ---- gate ---- */
+  .gate{ display:flex; align-items:center; flex-wrap:wrap; gap:10px 14px; background:var(--accent-soft); border:1px solid var(--accent); border-radius:14px; padding:14px 18px; box-shadow:var(--shadow); }
+  .gate .txt{ flex:1; min-width:220px; }
+  .gate b{ color:var(--accent); }
+  .gate-btns{ display:flex; flex-wrap:wrap; gap:8px; }
+
+  .btn{ cursor:pointer; font-weight:700; font-size:13px; border:1px solid var(--line); background:var(--surface-alt); border-radius:9px; padding:9px 15px; min-height:40px; }
+  .btn:hover{ border-color:var(--accent-2); }
+  .btn.primary{ background:var(--accent); border-color:var(--accent); color:var(--on-accent); }
+  .btn.ok{ background:var(--success); border-color:var(--success); color:#fff; }
+  .btn.ghost{ background:transparent; }
+  .btn[disabled]{ opacity:.45; cursor:not-allowed; }
+
+  /* ---- main grid ---- */
+  .grid{ display:grid; grid-template-columns:1fr; gap:16px; }
+  @media (min-width:900px){ .grid{ grid-template-columns:1.25fr 1fr; align-items:start; } }
+
+  /* ---- mission ---- */
+  .m-top{ display:flex; flex-wrap:wrap; gap:8px 12px; align-items:center; justify-content:space-between; margin-bottom:4px; }
+  .m-date{ font-size:12px; color:var(--text-dim); font-weight:700; }
+  .m-title{ font-size:20px; font-weight:900; margin:2px 0 2px; text-wrap:balance; }
+  .m-meta{ font-size:12.5px; color:var(--text-dim); margin-bottom:12px; }
+  .blk{ margin:0 0 14px; }
+  .blk h3{ margin:0 0 6px; font-size:11.5px; letter-spacing:.06em; color:var(--text-dim); font-weight:700; }
+  .items{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:6px; }
+  .items li{ display:flex; justify-content:space-between; gap:12px; background:var(--surface-alt); border-radius:8px; padding:8px 12px; font-size:13px; }
+  .items li .amt{ color:var(--accent-2); font-weight:700; white-space:nowrap; }
+  .m-note{ font-size:12.5px; color:var(--text-dim); margin:0 0 14px; }
+  .field{ display:flex; flex-direction:column; gap:6px; margin-bottom:12px; }
+  .field label,.field .lab{ font-size:12px; font-weight:700; color:var(--text-dim); }
+  .field input[type=text],.field input[type=number],.field input[type=date],.field input[type=password],.field textarea{ width:100%; border:1px solid var(--line); background:var(--surface); border-radius:9px; padding:9px 12px; min-height:40px; }
+  .field textarea{ min-height:76px; resize:vertical; }
+  .act{ display:flex; flex-wrap:wrap; gap:8px; }
+  .rec-state{ margin-top:10px; font-size:12.5px; }
+
+  /* ---- staff ---- */
+  .staff{ display:flex; flex-direction:column; gap:12px; }
+  .st{ display:flex; gap:12px; align-items:flex-start; }
+  .av{ width:40px; height:40px; border-radius:50%; flex:none; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:900; font-size:16px; }
+  .st-body{ flex:1; min-width:0; }
+  .st-name{ display:flex; flex-wrap:wrap; gap:2px 8px; align-items:baseline; font-size:12.5px; }
+  .st-name b{ font-weight:700; } .st-name span{ color:var(--text-dim); font-size:11.5px; }
+  .bubble{ margin-top:4px; background:var(--surface-alt); border-radius:4px 12px 12px 12px; padding:9px 12px; font-size:13px; }
+
+  /* ---- timecard ---- */
+  .tc-wrap{ overflow-x:auto; }
+  .tc{ display:grid; grid-template-columns:44px repeat(7, minmax(0,1fr)); gap:6px; min-width:340px; }
+  .tc .hd{ font-size:11px; font-weight:700; color:var(--text-dim); text-align:center; padding-bottom:2px; }
+  .tc .wk{ font-size:11px; font-weight:700; color:var(--text-dim); display:flex; align-items:center; }
+  .cell{ cursor:pointer; border:1px solid var(--line); background:var(--surface); border-radius:9px; padding:6px 2px; min-height:58px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; }
+  .cell .d{ font-size:10.5px; color:var(--text-dim); }
+  .cell .g{ font-size:13px; font-weight:900; }
+  .cell.s-done{ background:var(--success-soft); border-color:var(--success); } .cell.s-done .g{ color:var(--success); }
+  .cell.s-mini{ background:var(--accent-2-soft); border-color:var(--accent-2); } .cell.s-mini .g{ color:var(--accent-2); }
+  .cell.s-skip{ background:var(--warn-soft); border-color:var(--warn); } .cell.s-skip .g{ color:var(--warn); }
+  .cell.s-off{ background:var(--idle-soft); } .cell.s-off .g{ color:var(--idle); }
+  .cell.s-missed{ border-style:dashed; border-color:var(--warn); } .cell.s-missed .g{ color:var(--warn); }
+  .cell.future{ opacity:.7; }
+  .cell.today{ box-shadow:0 0 0 2px var(--accent); }
+  .cell.sel{ outline:2px solid var(--accent-2); outline-offset:1px; }
+  .legend{ display:flex; flex-wrap:wrap; gap:6px 14px; margin-top:12px; font-size:11.5px; color:var(--text-dim); }
+  .legend i{ font-style:normal; font-weight:900; margin-right:4px; }
+
+  /* ---- review ---- */
+  .chips{ display:flex; flex-wrap:wrap; gap:8px; }
+  .chip{ cursor:pointer; border:1px solid var(--line); background:var(--surface); border-radius:999px; padding:7px 14px; font-size:12.5px; font-weight:700; min-height:36px; }
+  .chip[aria-pressed="true"]{ background:var(--accent-2); border-color:var(--accent-2); color:#fff; }
+  :root[data-theme="dark"] .chip[aria-pressed="true"]{ color:#0d1220; }
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .chip[aria-pressed="true"]{ color:#0d1220; } }
+  .two{ display:grid; grid-template-columns:1fr; gap:0 16px; }
+  @media (min-width:640px){ .two{ grid-template-columns:1fr 1fr; } }
+  .wk-tabs{ display:flex; flex-wrap:wrap; gap:6px; }
+  .wk-summary{ font-size:12.5px; color:var(--text-dim); margin:0 0 14px; }
+
+  /* ---- log / stock ---- */
+  .log{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:6px; }
+  .log li{ display:flex; gap:10px; align-items:baseline; background:var(--surface-alt); border-radius:8px; padding:8px 12px; font-size:12.5px; }
+  .log .when{ color:var(--text-dim); white-space:nowrap; }
+  .log .what{ flex:1; min-width:0; overflow-wrap:anywhere; }
+  .empty{ color:var(--text-dim); font-size:12.5px; }
+  .stock{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px; }
+  .stock li{ display:flex; align-items:center; justify-content:space-between; gap:10px; background:var(--surface-alt); border-radius:8px; padding:10px 12px; font-size:13px; }
+
+  /* ---- 食事と体重 ---- */
+  .nut-grid{ display:grid; grid-template-columns:1fr; gap:20px; }
+  @media (min-width:900px){ .nut-grid{ grid-template-columns:1fr 1fr; align-items:start; } }
+  .meal-row{ display:grid; grid-template-columns:44px 1fr; align-items:center; gap:8px; margin-bottom:8px; }
+  .meal-row label{ font-size:12px; font-weight:700; color:var(--text-dim); }
+  .meal-row input{ width:100%; border:1px solid var(--line); background:var(--surface); border-radius:9px; padding:9px 12px; min-height:40px; }
+  .meal-row input:disabled,.field input:disabled{ opacity:.55; }
+  .w-row{ display:flex; flex-wrap:wrap; gap:10px 14px; align-items:flex-end; margin-bottom:12px; }
+  .w-row .field{ margin:0; width:150px; }
+  .chart-box{ border:1px solid var(--line); border-radius:10px; background:var(--surface); padding:10px 8px 4px; }
+  .chart-box svg{ display:block; width:100%; height:auto; }
+  .chart-box .ax{ fill:var(--text-dim); font-size:10px; }
+  .chart-box .grid-l{ stroke:var(--line); stroke-width:1; }
+  .chart-box .ln{ fill:none; stroke:var(--accent-2); stroke-width:2; stroke-linejoin:round; stroke-linecap:round; }
+  .chart-box .pt{ fill:var(--surface); stroke:var(--accent-2); stroke-width:2; }
+  .chart-box .pt-last{ fill:var(--accent); stroke:var(--accent); }
+  .chart-box .lbl{ fill:var(--text); font-size:11px; font-weight:700; }
+  .chart-box .tgt-l{ stroke:var(--accent); stroke-width:1.5; stroke-dasharray:4 3; }
+  .chart-box .tgt-t{ fill:var(--accent); font-size:10.5px; font-weight:700; }
+  .gl-tiles{ margin:4px 0 14px; }
+  .gl-lines{ list-style:none; margin:14px 0 0; padding:0; display:flex; flex-direction:column; gap:6px; }
+  .gl-lines li{ background:var(--surface-alt); border-radius:8px; padding:9px 12px; font-size:13px; }
+  .gl-lines li b{ font-weight:700; }
+  .gl-lines li.warn{ background:var(--warn-soft); }
+  .chart-note{ font-size:12px; color:var(--text-dim); margin:8px 0 14px; }
+  .meals{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:6px; }
+  .meals li{ background:var(--surface-alt); border-radius:8px; padding:8px 12px; font-size:12.5px; display:flex; flex-direction:column; gap:2px; }
+  .meals .hd2{ display:flex; gap:10px; align-items:baseline; font-weight:700; }
+  .meals .hd2 .wt{ margin-left:auto; color:var(--accent-2); }
+  .meals .body2{ color:var(--text-dim); overflow-wrap:anywhere; }
+
+  /* ---- 週次の科学分析 ---- */
+  .an-sum{ margin:0 0 8px; font-size:14px; font-weight:500; }
+  .an-num{ margin:0 0 12px; font-size:12px; color:var(--text-dim); }
+  #an-body h3{ margin:12px 0 6px; font-size:11.5px; letter-spacing:.06em; color:var(--text-dim); font-weight:700; }
+  .an-list{ margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:6px; }
+  .an-list li{ background:var(--surface-alt); border-radius:8px; padding:8px 12px; font-size:13px; display:flex; flex-direction:column; gap:2px; }
+  .an-ev{ font-size:11.5px; color:var(--accent-2); font-weight:700; }
+  .an-src{ margin:0; padding-left:18px; font-size:12.5px; }
+  .an-src a{ color:var(--accent-2); overflow-wrap:anywhere; }
+
+  /* ---- 根拠メモ ---- */
+  .ev{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px; }
+  .ev li{ background:var(--surface-alt); border-radius:8px; padding:10px 12px; display:flex; flex-direction:column; gap:3px; font-size:13px; }
+  .ev .eh{ display:flex; flex-wrap:wrap; gap:4px 10px; align-items:baseline; }
+  .ev .eh b{ font-weight:700; }
+  .ev .eid{ font-size:11px; color:var(--accent-2); font-weight:700; }
+  .ev .es{ font-size:11.5px; color:var(--text-dim); }
+  .ev a{ color:var(--accent-2); font-size:12px; font-weight:700; overflow-wrap:anywhere; }
+  .ev-note{ font-size:12px; color:var(--text-dim); margin:12px 0 0; }
+
+  /* ---- AIコーチ ---- */
+  .coach-out{ margin-top:14px; background:var(--surface-alt); border-radius:4px 12px 12px 12px; padding:12px 14px; font-size:13.5px; white-space:pre-wrap; overflow-wrap:anywhere; }
+  .coach-out .cap{ display:block; font-size:11.5px; font-weight:700; color:var(--text-dim); margin-bottom:6px; white-space:normal; }
+
+  .toast{ position:fixed; left:50%; bottom:calc(20px + env(safe-area-inset-bottom, 0px)); transform:translate(-50%,12px); background:var(--text); color:var(--bg); padding:10px 16px; border-radius:10px; font-size:13px; font-weight:700; opacity:0; pointer-events:none; transition:opacity .25s, transform .25s; max-width:calc(100% - 32px); z-index:10; }
+  .toast.show{ opacity:1; transform:translate(-50%,0); }
+  .foot{ font-size:11.5px; color:var(--text-dim); text-align:center; }
+</style>
+<style>
+  :root{ box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px); }
+  html{ -webkit-text-size-adjust:100%; }
+  body{ margin:0; }
+  img{ max-width:100%; }
+  [hidden]{ display:none !important; }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <div class="panel topbar">
+    <div class="brand">
+      <div class="mark">改</div>
+      <div class="names">
+        <div class="co">しょうたのボディ改造カンパニー</div>
+        <div class="tag">AI社員が、1か月のトレーニングを見守る社内ステータスボード</div>
+      </div>
+    </div>
+    <div class="stages" id="stages" aria-label="4週間の進み具合"></div>
+    <div class="today-box">
+      <div class="label" id="today-label">本日</div>
+      <div class="val" id="today-val">—</div>
+      <span class="pill" id="today-pill"><span class="dot"></span><span id="today-pill-txt">読み込み中</span></span>
+    </div>
+  </div>
+
+  <div class="panel kpi-panel">
+    <div class="kpi-stats">
+      <div class="kpi"><span class="kv mono" id="k-punch">0</span><span class="kl">出勤（打刻）回数</span></div>
+      <div class="kpi"><span class="kv mono" id="k-full">0</span><span class="kl">フル完了</span></div>
+      <div class="kpi"><span class="kv mono" id="k-streak">0</span><span class="kl">連続出勤</span></div>
+      <div class="kpi"><span class="kv mono" id="k-rate">—</span><span class="kl">出勤率</span></div>
+    </div>
+    <div class="goal">
+      <div class="row"><span>1か月で改造完了まで</span><span class="mono" id="g-pct">0%</span></div>
+      <div class="track"><div class="fill" id="g-fill"></div></div>
+      <div class="row" style="font-weight:500;"><span id="g-note">予定20回のうち 0 回</span><span class="mono" id="g-range">9/28 – 10/25</span></div>
+    </div>
+  </div>
+
+  <div class="gate" id="gate" hidden>
+    <span class="txt"><b>社長決裁待ち：</b><span id="gate-txt"></span></span>
+    <div class="gate-btns">
+      <button class="btn ok" data-next="keep">このまま続ける</button>
+      <button class="btn" data-next="lighter">少し軽くする</button>
+      <button class="btn" data-next="harder">少し強くする</button>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="panel">
+      <div class="panel-head"><h2>本日のミッション</h2><span class="sub" id="m-sub"></span></div>
+      <div class="panel-body">
+        <div class="m-top">
+          <span class="m-date mono" id="m-date">—</span>
+          <span class="pill" id="m-pill"><span class="dot"></span><span id="m-pill-txt">未打刻</span></span>
+        </div>
+        <h3 class="m-title" id="m-title">—</h3>
+        <div class="m-meta" id="m-meta"></div>
+        <div class="blk" id="m-warm-blk"><h3>ウォームアップ</h3><ul class="items" id="m-warm"></ul></div>
+        <div class="blk"><h3 id="m-main-h">本編</h3><ul class="items" id="m-main"></ul></div>
+        <p class="m-note" id="m-tip"></p>
+        <div class="field">
+          <label for="note-input">ひとこと（きつさ・感想。空でも大丈夫です）</label>
+          <input type="text" id="note-input" maxlength="120" placeholder="例：スクワットの3秒下ろしが効いた">
+        </div>
+        <div class="act">
+          <button class="btn ok" id="b-done">やった</button>
+          <button class="btn primary" id="b-mini">5分だけやった</button>
+          <button class="btn ghost" id="b-skip">今日は休む</button>
+          <button class="btn ghost" id="b-undo">取り消し</button>
+        </div>
+        <div class="rec-state" id="rec-state"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><h2>AI社員のひとこと</h2><span class="sub">記録の状況から自動で表示</span></div>
+      <div class="panel-body"><div class="staff" id="staff"></div></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head"><h2>Claudeに相談する</h2><span class="sub">記録をコピーして、Claudeのチャットに貼りつけると、AIコーチに相談できます</span></div>
+    <div class="panel-body">
+      <div class="act"><button class="btn primary" id="cp-copy">記録をコピー</button></div>
+      <div class="field" id="cp-wrap" style="margin-top:12px;" hidden>
+        <label for="cp-text">コピーされる内容（コピーできないときは、ここを全選択してコピーしてください）</label>
+        <textarea id="cp-text" readonly style="min-height:140px;"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head"><h2>根拠メモ</h2><span class="sub" id="ev-updated"></span></div>
+    <div class="panel-body">
+      <ul class="ev" id="ev"></ul>
+      <p class="ev-note">ウェブ検索で内容を確認できたものだけを載せています。</p>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head"><h2>食事と体重の記録</h2><span class="sub" id="n-sub"></span></div>
+    <div class="panel-body">
+      <div class="nut-grid">
+        <div>
+          <div class="w-row">
+            <div class="field"><label for="n-weight">体重（kg）</label><input type="number" id="n-weight" step="0.1" min="20" max="300" inputmode="decimal" placeholder="例：68.4"></div>
+            <button class="chip" id="n-protein" aria-pressed="false">毎食たんぱく質をとれた</button>
+          </div>
+          <div class="meal-row"><label for="n-b">朝</label><input type="text" id="n-b" maxlength="120" placeholder="例：納豆ごはん、味噌汁"></div>
+          <div class="meal-row"><label for="n-l">昼</label><input type="text" id="n-l" maxlength="120"></div>
+          <div class="meal-row"><label for="n-d">夜</label><input type="text" id="n-d" maxlength="120"></div>
+          <div class="meal-row"><label for="n-s">間食</label><input type="text" id="n-s" maxlength="120"></div>
+          <div class="act"><button class="btn primary" id="n-save">この日の記録を保存</button><button class="btn ghost" id="n-clear">この日の記録を消す</button></div>
+        </div>
+        <div>
+          <div class="chart-box" id="chart"></div>
+          <p class="chart-note" id="chart-note"></p>
+          <div class="blk"><h3>直近の記録</h3><ul class="meals" id="meals"></ul></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head"><h2>目標体重までの見通し</h2><span class="sub">記録した体重から、達成の目安を数字で出します</span></div>
+    <div class="panel-body">
+      <div class="w-row">
+        <div class="field"><label for="gl-target">目標体重（kg）</label><input type="number" id="gl-target" step="0.1" min="20" max="300" inputmode="decimal" placeholder="例：65.0"></div>
+        <div class="field"><label for="gl-date">目標日（任意）</label><input type="date" id="gl-date" min="2026-09-28"></div>
+        <button class="btn primary" id="gl-save">目標を保存</button>
+      </div>
+      <div class="kpi-stats gl-tiles" id="gl-tiles"></div>
+      <div class="goal">
+        <div class="row"><span>目標までの進み具合</span><span class="mono" id="gl-pct">—</span></div>
+        <div class="track"><div class="fill" id="gl-bar"></div></div>
+      </div>
+      <ul class="gl-lines" id="gl-lines"></ul>
+      <p class="ev-note" id="gl-note"></p>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head"><h2>タイムカード（4週間）</h2><span class="sub">日付を押すと、その日のミッションを開きます</span></div>
+    <div class="panel-body">
+      <div class="tc-wrap"><div class="tc" id="tc"></div></div>
+      <div class="legend">
+        <span><i style="color:var(--success)">済</i>フル完了</span>
+        <span><i style="color:var(--accent-2)">5分</i>5分だけ</span>
+        <span><i style="color:var(--warn)">休</i>休んだ</span>
+        <span><i style="color:var(--idle)">養</i>休養日</span>
+        <span><i style="color:var(--warn)">未</i>記録なし</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head"><h2>週の振り返り</h2><span class="sub">日曜に10分。ここに残した内容をもとに、来週のメニューを調整します</span></div>
+    <div class="panel-body">
+      <div class="field"><span class="lab">対象の週</span><div class="wk-tabs" id="wk-tabs"></div></div>
+      <p class="wk-summary" id="wk-summary"></p>
+      <div class="field"><span class="lab">今週のきつさ</span>
+        <div class="chips" id="effort">
+          <button class="chip" data-v="1" aria-pressed="false">1 楽すぎた</button>
+          <button class="chip" data-v="2" aria-pressed="false">2 ちょうど楽</button>
+          <button class="chip" data-v="3" aria-pressed="false">3 ちょうどいい</button>
+          <button class="chip" data-v="4" aria-pressed="false">4 ややきつい</button>
+          <button class="chip" data-v="5" aria-pressed="false">5 きつすぎた</button>
+        </div>
+      </div>
+      <div class="two">
+        <div class="field"><label for="r-hard">きつかった種目・気になったこと</label><input type="text" id="r-hard" maxlength="160"></div>
+        <div class="field"><label for="r-weight">体重（測っていれば、kg）</label><input type="number" id="r-weight" step="0.1" min="20" max="300" inputmode="decimal"></div>
+      </div>
+      <div class="field"><label for="r-memo">メモ</label><textarea id="r-memo" maxlength="400"></textarea></div>
+      <div class="field"><span class="lab">来週の方針</span>
+        <div class="chips" id="next">
+          <button class="chip" data-v="keep" aria-pressed="false">このまま</button>
+          <button class="chip" data-v="lighter" aria-pressed="false">少し軽く</button>
+          <button class="chip" data-v="harder" aria-pressed="false">少し強く</button>
+        </div>
+      </div>
+      <div class="act"><button class="btn primary" id="r-save">振り返りを保存</button></div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="panel">
+      <div class="panel-head"><h2>経緯ログ</h2><span class="sub">新しい順</span></div>
+      <div class="panel-body"><ul class="log" id="log"></ul></div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><h2>案件ストック</h2><span class="sub">担当：秘書 控え 汐里</span></div>
+      <div class="panel-body">
+        <ul class="stock">
+          <li><span>ダンベルの重さを少し上げる（2週目以降）</span><span class="pill">未着手</span></li>
+          <li><span>食事のたんぱく質を毎食意識する</span><span class="pill busy">検討中</span></li>
+          <li><span>ゴムチューブでウォームアップ</span><span class="pill">見送り</span></li>
+          <li><span>朝のストレッチ5分</span><span class="pill">未着手</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head"><h2>同期の設定</h2><span class="sub" id="sy-status">未設定</span></div>
+    <div class="panel-body">
+      <p class="m-note">スマホとPCで同じ記録を使うために、あなたのGitHubの非公開リポジトリに記録を保存します。2台目以降は、同じ内容を入力するだけです。</p>
+      <div class="two">
+        <div class="field"><label for="sy-owner">GitHubのユーザー名</label><input type="text" id="sy-owner" autocomplete="off" autocapitalize="none" spellcheck="false"></div>
+        <div class="field"><label for="sy-repo">記録用リポジトリ名（非公開）</label><input type="text" id="sy-repo" value="body-company-data" autocomplete="off" autocapitalize="none" spellcheck="false"></div>
+        <div class="field"><label for="sy-path">ファイル名</label><input type="text" id="sy-path" value="data.json" autocomplete="off" autocapitalize="none" spellcheck="false"></div>
+        <div class="field"><label for="sy-token">アクセストークン</label><input type="password" id="sy-token" autocomplete="off" spellcheck="false"></div>
+      </div>
+      <div class="act">
+        <button class="btn primary" id="sy-save">保存して同期</button>
+        <button class="btn" id="sy-now">今すぐ同期</button>
+        <button class="btn ghost" id="sy-clear">同期を解除</button>
+      </div>
+      <p class="ev-note">トークンは、この端末のブラウザにだけ保存されます。「記録用リポジトリだけ」に、Contents の読み書き権限を付けた、細かい権限のトークンを使ってください。</p>
+    </div>
+  </div>
+
+  <div class="foot" id="foot"></div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ===== 日付まわり（日本時間・9/28 月曜スタートの28日間） =====
+  function pad(n){ return n < 10 ? "0" + n : "" + n; }
+  function fmt(dt){ return dt.getUTCFullYear() + "-" + pad(dt.getUTCMonth() + 1) + "-" + pad(dt.getUTCDate()); }
+  var DOW = ["日","月","火","水","木","金","土"];
+  var DAYS = [];
+  (function(){
+    for (var i = 0; i < 28; i++) {
+      var dt = new Date(Date.UTC(2026, 8, 28 + i));
+      DAYS.push({ i:i, date:fmt(dt), dow:dt.getUTCDay(), md:(dt.getUTCMonth()+1) + "/" + dt.getUTCDate(), w:Math.floor(i/7) + 1 });
+    }
+  })();
+  var BYDATE = {}; DAYS.forEach(function(d){ BYDATE[d.date] = d; });
+  function todayStr(){
+    try { return new Date().toLocaleDateString("sv-SE", { timeZone:"Asia/Tokyo" }); }
+    catch(e){ return fmt(new Date(Date.now() + 9*3600*1000)); }
+  }
+  var TODAY = todayStr();
+
+  // ===== メニュー =====
+  var MENUS = {
+    1: { key:"A", kind:"strength", title:"筋トレA：下半身＋体幹", time:"20:00–20:50", rest:"休憩45秒",
+      warm:[["自重スクワット","10回"],["ヒップスラスト（ダンベルなし）","12回"],["脚を前後・左右に軽く振る","各10回"]],
+      main:[["ゴブレットスクワット","12回×3"],["ルーマニアンデッドリフト","12回×3"],["ブルガリアンスクワット","左右10回×3"],["ヒップスラスト","12回×3"],["プランク","30〜40秒×3"]],
+      tip:"下ろすときは3秒かけて静かに。ダンベルは床にそっと置きます。" },
+    2: { key:"有酸素", kind:"cardio", title:"静かな有酸素サーキット", time:"20:00–20:30", rest:"45秒動く→15秒休む",
+      warm:[["その場早歩き","5分"]],
+      main:[["バックランジ（左右交互）","45秒×4周"],["ゆっくりマウンテンクライマー","45秒×4周"],["ステップバーピー（ジャンプなし）","45秒×4周"],["バイシクルクランチ","45秒×4周"],["スクワット＋腕を頭上へ","45秒×4周"],["ゆっくり歩いてストレッチ","5分"]],
+      tip:"息は弾むけれど、少し会話できる強さが目安です。ジャンプはしません。" },
+    3: { key:"B", kind:"strength", title:"筋トレB：上半身", time:"20:00–20:50", rest:"休憩45〜60秒",
+      warm:[["腕回し（前・後ろ）","各10回"],["壁プッシュアップ","10回"],["肩甲骨を寄せる動き","15回"]],
+      main:[["インクラインダンベルプレス","10回×3"],["ワンハンドロウ（ベンチに手をつく）","左右12回×3"],["ダンベルショルダープレス","10回×3"],["アームカール","12回×2"],["トライセプスエクステンション","12回×2"]],
+      tip:"最初の2週間は、重さよりフォームが崩れないことを優先します。" },
+    4: { key:"休養", kind:"rest", title:"休養日（ストレッチ10分）", time:"自由", rest:"",
+      warm:[], main:[["全身のゆるいストレッチ","10分"]],
+      tip:"今日は体を回復させる日です。何もしなくても問題ありません。" },
+    5: { key:"C", kind:"strength", title:"筋トレC：全身サーキット", time:"20:00–20:45", rest:"1周ごとに休憩60秒・3周",
+      warm:[["自重スクワット","10回"],["ゆっくり足踏み","30秒"],["体をひねるストレッチ","左右10回"]],
+      main:[["ダンベルスラスター","12回"],["リバースランジ","左右8回"],["ダンベルロウ（前かがみ）","12回"],["デッドバグ","左右10回"]],
+      tip:"4種目を続けて1周です。フォームが崩れたら、その周は回数を減らして大丈夫です。" },
+    6: { key:"ウォーク", kind:"cardio", title:"早歩きウォーキング", time:"20:00–20:45", rest:"",
+      warm:[], main:[["外を早歩き","40〜45分"]],
+      tip:"雨の日は、火曜のサーキットを5種目×5周にして代わりにします。" },
+    0: { key:"休養", kind:"rest", title:"完全休養＋週の振り返り", time:"20:30–20:40", rest:"",
+      warm:[], main:[["下の「週の振り返り」に記録","10分"]],
+      tip:"今週できたこと、きつかったことを残しておくと、来週の調整がしやすくなります。" }
+  };
+  function trainDay(d){ return MENUS[d.dow].kind !== "rest"; }
+  var PLANNED = DAYS.filter(trainDay).length;
+
+  var STATUS_LABEL = { done:"フル完了", mini:"5分だけ", skip:"休んだ" };
+  var NEXT_LABEL = { keep:"このまま続ける", lighter:"少し軽くする", harder:"少し強くする" };
+
+  // ===== 状態 =====
+  var state = { days:{}, reviews:{}, logs:{}, goal:{ target:null, date:null }, selected:null, week:1 };
+  var noteFor = null, formWeek = null, formDirty = false, logFor = null, logDirty = false;
+
+  function $(id){ return document.getElementById(id); }
+  function esc(s){ return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+  var toastTimer = null;
+  function toast(msg){
+    var t = $("toast"); t.textContent = msg; t.classList.add("show");
+    clearTimeout(toastTimer); toastTimer = setTimeout(function(){ t.classList.remove("show"); }, 2600);
+  }
+
+  // ===== 保存（この端末に保存し、GitHubの非公開リポジトリで端末どうしを同期） =====
+  var LS_KEY = "body-company-app-v1", CFG_KEY = "body-company-sync-v1";
+  var store = { days:{}, logs:{}, reviews:{}, goal:null };          // 削除の印（del）を含む、同期用の全記録
+  var syncCfg = { owner:"", repo:"", path:"data.json", token:"" };
+  var syncInfo = { st:"off", at:null, msg:"" };                        // off | busy | ok | offline | error
+  var dirty = false, syncing = false, syncAgain = false, syncTimer = null;
+
+  function lsLoad(){
+    try {
+      var raw = localStorage.getItem(LS_KEY);
+      if (raw) { var o = JSON.parse(raw); store.days = o.days || {}; store.logs = o.logs || {}; store.reviews = o.reviews || {}; store.goal = o.goal || null; dirty = !!o.dirty; }
+    } catch(e){}
+    try {
+      var c = localStorage.getItem(CFG_KEY);
+      if (c) { var o2 = JSON.parse(c); syncCfg = { owner:o2.owner || "", repo:o2.repo || "", path:o2.path || "data.json", token:o2.token || "" }; }
+    } catch(e){}
+  }
+  function lsSave(){
+    try { localStorage.setItem(LS_KEY, JSON.stringify({ days:store.days, logs:store.logs, reviews:store.reviews, goal:store.goal, dirty:dirty })); } catch(e){}
+  }
+  function cfgSave(){ try { localStorage.setItem(CFG_KEY, JSON.stringify(syncCfg)); } catch(e){} }
+  function syncConfigured(){ return !!(syncCfg.owner && syncCfg.repo && syncCfg.token); }
+
+  function rebuildState(){
+    var days = {}, logs = {}, reviews = {};
+    Object.keys(store.days).forEach(function(k){ var r = store.days[k]; if (r && !r.del) days[k] = r; });
+    Object.keys(store.logs).forEach(function(k){ var r = store.logs[k]; if (r && !r.del) logs[k] = r; });
+    Object.keys(store.reviews).forEach(function(k){ var r = store.reviews[k]; if (r && !r.del) reviews[k] = r; });
+    state.days = days; state.logs = logs; state.reviews = reviews;
+    state.goal = store.goal ? { target: typeof store.goal.target === "number" ? store.goal.target : null, date: store.goal.date || null } : { target:null, date:null };
+  }
+  function touch(){ dirty = true; lsSave(); rebuildState(); renderAll(); scheduleSync(); }
+  function saveDay(date, rec){ store.days[date] = rec ? Object.assign({}, rec, { at:Date.now() }) : { del:true, at:Date.now() }; touch(); return Promise.resolve(); }
+  function saveLog(date, rec){ store.logs[date] = rec ? Object.assign({}, rec, { at:Date.now() }) : { del:true, at:Date.now() }; touch(); return Promise.resolve(); }
+  function saveReview(w, rec){ store.reviews[String(w)] = Object.assign({}, rec, { at:Date.now() }); touch(); return Promise.resolve(); }
+
+  // ----- 同期：記録ごとに、更新時刻(at)が新しいほうを採用して合体する -----
+  function newer(a, b){
+    if (!a) return b; if (!b) return a;
+    return (a.at || 0) >= (b.at || 0) ? a : b;
+  }
+  function mergeMap(a, b){
+    var out = {}, keys = {};
+    Object.keys(a || {}).forEach(function(k){ keys[k] = 1; });
+    Object.keys(b || {}).forEach(function(k){ keys[k] = 1; });
+    Object.keys(keys).forEach(function(k){ out[k] = newer((a || {})[k], (b || {})[k]); });
+    return out;
+  }
+  function normalize(o){ o = o || {}; return { days:o.days || {}, logs:o.logs || {}, reviews:o.reviews || {}, goal:o.goal || null }; }
+  function stable(v){
+    if (v === null || typeof v !== "object") return JSON.stringify(v);
+    if (Array.isArray(v)) return "[" + v.map(stable).join(",") + "]";
+    return "{" + Object.keys(v).sort().map(function(k){ return JSON.stringify(k) + ":" + stable(v[k]); }).join(",") + "}";
+  }
+  function same(a, b){ return stable(normalize(a)) === stable(normalize(b)); }
+  function mergeAll(remote){
+    var r = normalize(remote);
+    return { days:mergeMap(store.days, r.days), logs:mergeMap(store.logs, r.logs), reviews:mergeMap(store.reviews, r.reviews), goal:newer(store.goal, r.goal) };
+  }
+
+  function ghUrl(){
+    return "https://api.github.com/repos/" + encodeURIComponent(syncCfg.owner) + "/" + encodeURIComponent(syncCfg.repo) + "/contents/" +
+      syncCfg.path.split("/").map(encodeURIComponent).join("/");
+  }
+  function ghHeaders(){ return { "Authorization":"Bearer " + syncCfg.token, "Accept":"application/vnd.github+json", "X-GitHub-Api-Version":"2022-11-28" }; }
+  function b64enc(str){
+    var bytes = new TextEncoder().encode(str), bin = "";
+    for (var i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+    return btoa(bin);
+  }
+  function b64dec(b64){
+    var bin = atob(String(b64).replace(/\s/g, "")), bytes = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return new TextDecoder().decode(bytes);
+  }
+  function httpErr(r){ var e = new Error("HTTP " + r.status); e.status = r.status; return e; }
+  function ghGet(){
+    return fetch(ghUrl(), { headers:ghHeaders(), cache:"no-store" }).then(function(r){
+      if (r.status === 404) return { missing:true };
+      if (!r.ok) throw httpErr(r);
+      return r.json().then(function(j){ return { sha:j.sha, data:JSON.parse(b64dec(j.content)) }; });
+    });
+  }
+  function ghPut(data, sha){
+    var body = { message:"sync " + new Date().toISOString(), content:b64enc(JSON.stringify(data)) };
+    if (sha) body.sha = sha;
+    var h = ghHeaders(); h["Content-Type"] = "application/json";
+    return fetch(ghUrl(), { method:"PUT", headers:h, body:JSON.stringify(body) }).then(function(r){ if (!r.ok) throw httpErr(r); return r.json(); });
+  }
+  function doSync(tries){
+    return ghGet().then(function(remote){
+      var rd = remote.missing ? null : remote.data;
+      var merged = mergeAll(rd);
+      var localChanged = !same(merged, store);
+      store.days = merged.days; store.logs = merged.logs; store.reviews = merged.reviews; store.goal = merged.goal;
+      rebuildState(); lsSave(); if (localChanged) renderAll();
+      if (remote.missing || !same(merged, rd)) {
+        var payload = { v:1, days:merged.days, logs:merged.logs, reviews:merged.reviews, goal:merged.goal, updatedAt:new Date().toISOString() };
+        return ghPut(payload, remote.missing ? null : remote.sha).catch(function(e){
+          if ((e.status === 409 || e.status === 422) && tries < 3) return doSync(tries + 1);
+          throw e;
+        });
+      }
+    });
+  }
+  function scheduleSync(){
+    if (!syncConfigured()) return;
+    clearTimeout(syncTimer);
+    syncTimer = setTimeout(runSync, 1500);
+  }
+  function runSync(){
+    if (!syncConfigured()) { syncInfo = { st:"off", at:null, msg:"" }; renderSync(); return Promise.resolve(); }
+    if (syncing) { syncAgain = true; return Promise.resolve(); }
+    if (typeof navigator !== "undefined" && navigator.onLine === false) { syncInfo = { st:"offline", at:syncInfo.at, msg:"" }; renderSync(); return Promise.resolve(); }
+    syncing = true; syncInfo = { st:"busy", at:syncInfo.at, msg:"" }; renderSync();
+    return doSync(0).then(function(){
+      dirty = false; lsSave(); syncInfo = { st:"ok", at:Date.now(), msg:"" };
+    }).catch(function(e){
+      var s = e && e.status, msg;
+      if (s === 401) msg = "トークンが正しくないか、期限が切れています。";
+      else if (s === 403) msg = "このトークンには、記録用リポジトリへの書き込み権限がありません。";
+      else if (s === 404) msg = "リポジトリが見つかりません。ユーザー名・リポジトリ名・トークンの対象を確認してください。";
+      else if (s) msg = "GitHubから応答がありました（HTTP " + s + "）。少し待ってから、もう一度お試しください。";
+      else msg = "通信できませんでした。つながると自動で同期します。";
+      syncInfo = { st: s ? "error" : "offline", at:syncInfo.at, msg:msg };
+    }).then(function(){
+      syncing = false; renderSync();
+      if (syncAgain) { syncAgain = false; scheduleSync(); }
+    });
+  }
+  function fmtTime(t){
+    try { return new Date(t).toLocaleTimeString("ja-JP", { hour:"2-digit", minute:"2-digit", timeZone:"Asia/Tokyo" }); } catch(e){ return ""; }
+  }
+  function renderSync(){
+    var el = $("sy-status"), txt;
+    if (!syncConfigured()) txt = "未設定（この端末だけに保存）";
+    else if (syncInfo.st === "busy") txt = "同期中…";
+    else if (syncInfo.st === "ok") txt = "同期済み（" + fmtTime(syncInfo.at) + "）";
+    else if (syncInfo.st === "offline") txt = "オフライン" + (dirty ? "（未同期の変更あり）" : "");
+    else if (syncInfo.st === "error") txt = "同期できません：" + syncInfo.msg;
+    else txt = dirty ? "同期待ち（未同期の変更あり）" : "設定済み";
+    el.textContent = txt;
+    var foot = $("foot");
+    if (foot) foot.textContent = syncConfigured() ? "記録はこの端末に保存され、GitHubの非公開リポジトリと同期されます。" : "記録はこの端末にだけ保存されています。「同期の設定」で、スマホとPCをつなげられます。";
+  }
+
+  // ===== 集計 =====
+  function statusOf(date){ var r = state.days[date]; return r ? r.status : null; }
+  function stats(){
+    var punch = 0, full = 0, elapsed = 0;
+    DAYS.forEach(function(d){
+      if (!trainDay(d)) return;
+      var s = statusOf(d.date);
+      if (s === "done") { punch++; full++; } else if (s === "mini") { punch++; }
+      if (d.date < TODAY || s) elapsed++;
+    });
+    var streak = 0;
+    for (var i = DAYS.length - 1; i >= 0; i--) {
+      var d = DAYS[i];
+      if (!trainDay(d) || d.date > TODAY) continue;
+      var s = statusOf(d.date);
+      if (s === "done" || s === "mini") streak++;
+      else if (d.date === TODAY && !s) continue;
+      else break;
+    }
+    return { punch:punch, full:full, elapsed:elapsed, streak:streak };
+  }
+  function weekDays(w){ return DAYS.filter(function(d){ return d.w === w; }); }
+  function currentWeek(){
+    if (TODAY < DAYS[0].date) return 1;
+    if (TODAY > DAYS[27].date) return 4;
+    return BYDATE[TODAY].w;
+  }
+  function nextTraining(fromDate){
+    for (var i = 0; i < DAYS.length; i++) {
+      var d = DAYS[i];
+      if (trainDay(d) && d.date > fromDate) return d;
+    }
+    return null;
+  }
+  function weekCounts(w){
+    var c = { planned:0, done:0, mini:0, skip:0 };
+    weekDays(w).forEach(function(d){
+      if (!trainDay(d)) return;
+      c.planned++;
+      var s = statusOf(d.date);
+      if (s === "done") c.done++; else if (s === "mini") c.mini++; else if (s === "skip") c.skip++;
+    });
+    return c;
+  }
+
+  // ===== 描画：上部 =====
+  function renderTop(){
+    var before = TODAY < DAYS[0].date, after = TODAY > DAYS[27].date;
+    var pill = $("today-pill"), txt = $("today-pill-txt");
+    pill.className = "pill";
+    if (before) {
+      var diff = Math.round((Date.UTC(2026,8,28) - Date.parse(TODAY + "T00:00:00Z")) / 86400000);
+      $("today-label").textContent = "スタートまで"; $("today-val").textContent = "あと " + diff + " 日";
+      txt.textContent = "準備期間"; pill.classList.add("busy");
+    } else if (after) {
+      $("today-label").textContent = "1か月の記録"; $("today-val").textContent = "全28日 終了";
+      txt.textContent = "お疲れさまでした"; pill.classList.add("ok");
+    } else {
+      var d = BYDATE[TODAY];
+      $("today-label").textContent = d.md + "（" + DOW[d.dow] + "）";
+      $("today-val").textContent = (d.i + 1) + " 日目 / 28日";
+      var s = statusOf(TODAY);
+      if (!trainDay(d)) { txt.textContent = "休養日"; }
+      else if (s === "done" || s === "mini") { txt.textContent = "本日 出勤済み"; pill.classList.add("ok"); }
+      else if (s === "skip") { txt.textContent = "本日 お休み"; pill.classList.add("warn"); }
+      else { txt.textContent = "本日 未打刻"; pill.classList.add("busy"); }
+    }
+    var cw = currentWeek(), html = "";
+    for (var w = 1; w <= 4; w++) {
+      var cls = "stage" + (before ? "" : (w < cw || after ? " done" : (w === cw ? " current" : "")));
+      if (w > 1) html += '<span class="stage-sep"></span>';
+      html += '<span class="' + cls + '"><span class="num mono">' + w + '</span>第' + w + '週</span>';
+    }
+    $("stages").innerHTML = html;
+  }
+  function renderKpi(){
+    var s = stats();
+    $("k-punch").textContent = s.punch;
+    $("k-full").textContent = s.full;
+    $("k-streak").textContent = s.streak;
+    $("k-rate").textContent = s.elapsed ? Math.round(s.punch / s.elapsed * 100) + "%" : "—";
+    var pct = Math.min(100, Math.round(s.punch / PLANNED * 100));
+    $("g-fill").style.width = pct + "%";
+    $("g-pct").textContent = pct + "%";
+    $("g-note").textContent = "予定" + PLANNED + "回のうち " + s.punch + " 回（フル完了 " + s.full + " 回）";
+  }
+
+  // ===== 描画：決裁ゲート =====
+  function renderGate(){
+    var target = null;
+    for (var w = 1; w <= 4; w++) {
+      var sunday = DAYS[w * 7 - 1].date;
+      var r = state.reviews[w];
+      if (sunday <= TODAY && !(r && r.next)) { target = w; break; }
+    }
+    var gate = $("gate");
+    if (!target) { gate.hidden = true; gate.removeAttribute("data-week"); return; }
+    var c = weekCounts(target);
+    gate.hidden = false; gate.setAttribute("data-week", target);
+    $("gate-txt").textContent = "第" + target + "週は " + (c.done + c.mini) + " / " + c.planned + " 回の出勤でした。来週の方針を決めてください。詳しい振り返りは下のフォームからも残せます。";
+  }
+
+  // ===== 描画：ミッション =====
+  function itemsHtml(list){
+    return list.map(function(it){ return '<li><span>' + esc(it[0]) + '</span><span class="amt mono">' + esc(it[1]) + '</span></li>'; }).join("");
+  }
+  function renderMission(){
+    var d = BYDATE[state.selected], m = MENUS[d.dow];
+    $("m-date").textContent = d.md + "（" + DOW[d.dow] + "）  第" + d.w + "週 " + (d.i + 1) + "日目";
+    $("m-title").textContent = m.title;
+    $("m-meta").textContent = "予定 " + m.time + (m.rest ? "  ／  " + m.rest : "");
+    $("m-warm-blk").hidden = !m.warm.length;
+    $("m-warm").innerHTML = itemsHtml(m.warm);
+    $("m-main-h").textContent = m.kind === "rest" ? "今日やること" : "本編";
+    $("m-main").innerHTML = itemsHtml(m.main);
+    $("m-tip").textContent = m.tip;
+    var isToday = d.date === TODAY, future = d.date > TODAY, rest = m.kind === "rest";
+    $("m-sub").textContent = isToday ? "今日" : (future ? "これから" : "過去の日");
+    var rec = state.days[d.date], pill = $("m-pill"), pt = $("m-pill-txt");
+    pill.className = "pill";
+    if (rest) { pt.textContent = "休養日"; }
+    else if (rec) { pt.textContent = STATUS_LABEL[rec.status]; pill.classList.add(rec.status === "done" ? "ok" : (rec.status === "mini" ? "busy" : "warn")); }
+    else { pt.textContent = future ? "まだ先の予定" : "未打刻"; }
+    ["b-done","b-mini","b-skip"].forEach(function(id){ $(id).disabled = future || rest; });
+    $("b-undo").disabled = !rec;
+    $("note-input").disabled = future || rest;
+    if (noteFor !== d.date) { $("note-input").value = rec && rec.note ? rec.note : ""; noteFor = d.date; }
+    $("rec-state").textContent = rec ? ("記録済み：" + STATUS_LABEL[rec.status] + (rec.note ? "「" + rec.note + "」" : "")) :
+      (rest ? "休養日は打刻しなくて大丈夫です。" : (future ? "この日が来たら打刻できます。" : "終わったら「やった」を押してください。疲れている日は「5分だけ」も1回として数えます。"));
+  }
+
+  // ===== 描画：AI社員 =====
+  var STAFF = [
+    { id:"sec",   role:"秘書",     person:"控え 汐里", init:"控", color:"#3f7a68" },
+    { id:"coach", role:"コーチ",   person:"伴走 心",   init:"伴", color:"#8a2f4a" },
+    { id:"train", role:"トレーナー", person:"姿勢 正",   init:"姿", color:"#2c5f8a" },
+    { id:"nutri", role:"栄養士",   person:"配膳 恵",   init:"配", color:"#d9662c" }
+  ];
+  function staffMessages(){
+    var before = TODAY < DAYS[0].date, after = TODAY > DAYS[27].date;
+    var s = stats(), msg = {};
+    var d = state.selected ? BYDATE[state.selected] : null;
+    var today = BYDATE[TODAY];
+    var nx = nextTraining(before ? "0000-00-00" : TODAY);
+    if (after) {
+      msg.sec = "1か月分の予定はすべて終わりました。記録は経緯ログに残っています。";
+    } else if (before) {
+      msg.sec = "9/28（月）の20:00から筋トレAです。カレンダーの予定とリマインドは入っています。";
+    } else if (today && !trainDay(today)) {
+      msg.sec = "今日は休養日です。次の予定は " + (nx ? nx.md + "（" + DOW[nx.dow] + "）の" + MENUS[nx.dow].title : "ありません") + "です。";
+    } else if (today && statusOf(TODAY)) {
+      msg.sec = "今日の打刻を確認しました。次は " + (nx ? nx.md + "（" + DOW[nx.dow] + "）の" + MENUS[nx.dow].title : "特にありません") + "です。";
+    } else if (today) {
+      msg.sec = "今日は " + MENUS[today.dow].time.split("–")[0] + " から「" + MENUS[today.dow].title + "」の予定です。";
+    }
+    var lastMissed = false;
+    for (var i = DAYS.length - 1; i >= 0; i--) {
+      var dd = DAYS[i]; if (!trainDay(dd) || dd.date >= TODAY) continue;
+      var st = statusOf(dd.date); lastMissed = !(st === "done" || st === "mini"); break;
+    }
+    if (before) msg.coach = "まだ準備の時間です。器具が届くまでは、早歩きや自重の動きだけでも大丈夫ですよ。";
+    else if (after) msg.coach = "28日間、本当にお疲れさまでした。続けたこと自体が、いちばんの成果です。";
+    else if (s.streak >= 5) msg.coach = "連続 " + s.streak + " 回、いい流れです。ここまで積み上げたことを、ぜひ自分でも認めてあげてください。";
+    else if (s.streak >= 1) msg.coach = "連続 " + s.streak + " 回です。無理のないペースで、次も一緒にいきましょう。";
+    else if (lastMissed && s.elapsed > 0) msg.coach = "前回はお休みでしたね。大丈夫です。次の予定に戻れれば、それで十分です。";
+    else msg.coach = "最初の1回が、いちばんの山です。今日はウォームアップだけでも、出勤として数えますよ。";
+    var mk = d ? MENUS[d.dow] : MENUS[1];
+    var trainTips = { A:"膝はつま先と同じ向きに。かかとは浮かさず、足裏全体で床を踏みます。", B:"肩がすくまないように。肘は体から少し離して、ゆっくり下ろします。", C:"フォームが崩れたら回数を減らして大丈夫です。丁寧さを優先しましょう。" };
+    if (mk.kind === "cardio") msg.train = "動きを大きくするより、回数を増やすほうが静かです。足はそっと下ろしましょう。";
+    else if (mk.kind === "rest") msg.train = "休養日は、股関節と肩まわりを軽く伸ばす程度で十分です。";
+    else msg.train = trainTips[mk.key];
+    msg.nutri = mk.kind === "strength" ? "運動後は、たんぱく質（卵・鶏肉・納豆など）を意識して食べると回復しやすくなります。水分もこまめに。"
+              : mk.kind === "cardio" ? "有酸素の前後は、水分を少しずつ。食べすぎを取り戻そうとしなくて大丈夫です。"
+              : "休養日は、たんぱく質を毎食ひとつ入れるだけで十分です。";
+    var tl = state.logs[TODAY];
+    var hasMeal = tl && (tl.breakfast || tl.lunch || tl.dinner || tl.snack);
+    if (!before && !after && !hasMeal) msg.nutri += " 今日の食事は、ざっくりで大丈夫なので記録してみましょう。";
+    else if (!before && !after && tl && tl.protein) msg.nutri += " 今日はたんぱく質を意識できていますね。";
+    return msg;
+  }
+  function renderStaff(){
+    var m = staffMessages();
+    $("staff").innerHTML = STAFF.map(function(p){
+      return '<div class="st"><div class="av" style="background:' + p.color + '">' + p.init + '</div><div class="st-body">' +
+        '<div class="st-name"><b>' + p.person + '</b><span>' + p.role + '</span></div><div class="bubble">' + esc(m[p.id]) + '</div></div></div>';
+    }).join("");
+  }
+
+  // ===== 描画：タイムカード =====
+  function renderGrid(){
+    var html = '<div class="hd"></div>' + ["月","火","水","木","金","土","日"].map(function(n){ return '<div class="hd">' + n + '</div>'; }).join("");
+    for (var w = 1; w <= 4; w++) {
+      html += '<div class="wk">第' + w + '週</div>';
+      weekDays(w).forEach(function(d){
+        var s = statusOf(d.date), cls = "cell", g = "", tr = trainDay(d);
+        if (!tr) { cls += " s-off"; g = "養"; }
+        else if (s === "done") { cls += " s-done"; g = "済"; }
+        else if (s === "mini") { cls += " s-mini"; g = "5分"; }
+        else if (s === "skip") { cls += " s-skip"; g = "休"; }
+        else if (d.date < TODAY) { cls += " s-missed"; g = "未"; }
+        else { g = "・"; }
+        if (d.date > TODAY) cls += " future";
+        if (d.date === TODAY) cls += " today";
+        if (d.date === state.selected) cls += " sel";
+        html += '<button class="' + cls + '" data-date="' + d.date + '" aria-label="' + d.md + '（' + DOW[d.dow] + '） ' + esc(MENUS[d.dow].title) + '"><span class="d mono">' + d.md + '</span><span class="g">' + g + '</span></button>';
+      });
+    }
+    $("tc").innerHTML = html;
+  }
+
+  // ===== 描画：振り返り =====
+  function renderReviewMeta(){
+    var w = state.week;
+    $("wk-tabs").innerHTML = [1,2,3,4].map(function(n){
+      var r = state.reviews[n], mark = r && r.next ? " ✓" : "";
+      return '<button class="chip" data-w="' + n + '" aria-pressed="' + (n === w) + '">第' + n + '週' + mark + '</button>';
+    }).join("");
+    var c = weekCounts(w), ds = weekDays(w);
+    var ws = [];
+    ds.forEach(function(d){ var l = state.logs[d.date]; if (l && typeof l.weight === "number") ws.push(l.weight); });
+    var wtxt = "";
+    if (ws.length >= 2) { var df = Math.round((ws[ws.length-1] - ws[0]) * 10) / 10; wtxt = " 体重は " + ws[0] + " → " + ws[ws.length-1] + " kg（" + (df > 0 ? "+" : "") + df + "）。"; }
+    else if (ws.length === 1) { wtxt = " 体重の記録は " + ws[0] + " kg です。"; }
+    $("wk-summary").textContent = ds[0].md + " – " + ds[6].md + "：予定 " + c.planned + " 回のうち、フル完了 " + c.done + " 回、5分だけ " + c.mini + " 回、休み " + c.skip + " 回。" + wtxt;
+    if (formWeek !== w || !formDirty) fillForm(w);
+  }
+  function fillForm(w){
+    var r = state.reviews[w] || {};
+    setChip("effort", r.effort != null ? String(r.effort) : "");
+    setChip("next", r.next || "");
+    $("r-hard").value = r.hard || "";
+    $("r-weight").value = r.weight != null ? r.weight : "";
+    $("r-memo").value = r.memo || "";
+    formWeek = w; formDirty = false;
+  }
+  function setChip(groupId, v){
+    Array.prototype.forEach.call($(groupId).children, function(b){ b.setAttribute("aria-pressed", String(b.getAttribute("data-v") === v)); });
+  }
+  function getChip(groupId){
+    var out = "";
+    Array.prototype.forEach.call($(groupId).children, function(b){ if (b.getAttribute("aria-pressed") === "true") out = b.getAttribute("data-v"); });
+    return out;
+  }
+
+  // ===== 描画：ログ =====
+  function renderLog(){
+    var rows = [];
+    DAYS.forEach(function(d){ var r = state.days[d.date]; if (r) rows.push({ d:d, r:r }); });
+    rows.reverse();
+    var out = rows.slice(0, 14).map(function(x){
+      return '<li><span class="when mono">' + x.d.md + '（' + DOW[x.d.dow] + '）</span><span class="what">' + esc(MENUS[x.d.dow].key === "A" || MENUS[x.d.dow].key === "B" || MENUS[x.d.dow].key === "C" ? "筋トレ" + MENUS[x.d.dow].key : MENUS[x.d.dow].title) +
+        ' — ' + STATUS_LABEL[x.r.status] + (x.r.note ? "：" + esc(x.r.note) : "") + '</span></li>';
+    }).join("");
+    var revs = [];
+    for (var w = 1; w <= 4; w++) { var rv = state.reviews[w]; if (rv && (rv.next || rv.effort)) revs.push(w); }
+    revs.reverse().forEach(function(w){
+      var rv = state.reviews[w];
+      out = '<li><span class="when mono">第' + w + '週</span><span class="what">振り返り' + (rv.effort ? "（きつさ " + rv.effort + "）" : "") + (rv.next ? " — 来週：" + NEXT_LABEL[rv.next] : "") + '</span></li>' + out;
+    });
+    $("log").innerHTML = out || '<li class="empty">まだ記録がありません。最初の打刻がここに並びます。</li>';
+  }
+
+  // ===== 描画：食事と体重 =====
+  function renderLogForm(){
+    var d = BYDATE[state.selected], future = d.date > TODAY, r = state.logs[d.date] || {};
+    $("n-sub").textContent = d.md + "（" + DOW[d.dow] + "）の記録" + (future ? "（この日が来たら入力できます）" : "");
+    if (logFor !== d.date || !logDirty) {
+      $("n-weight").value = typeof r.weight === "number" ? r.weight : "";
+      $("n-b").value = r.breakfast || ""; $("n-l").value = r.lunch || ""; $("n-d").value = r.dinner || ""; $("n-s").value = r.snack || "";
+      $("n-protein").setAttribute("aria-pressed", String(!!r.protein));
+      logFor = d.date; logDirty = false;
+    }
+    ["n-weight","n-b","n-l","n-d","n-s","n-protein","n-save"].forEach(function(id){ $(id).disabled = future; });
+    $("n-clear").disabled = !state.logs[d.date];
+  }
+  function renderChart(){
+    var pts = [];
+    DAYS.forEach(function(d){ var l = state.logs[d.date]; if (l && typeof l.weight === "number") pts.push({ i:d.i, md:d.md, v:l.weight }); });
+    var W = 360, H = 190, L = 38, R = 16, T = 18, B = 30, pw = W - L - R, ph = H - T - B;
+    var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="体重の推移グラフ">';
+    var lo = 0, hi = 1, tg = (state.goal && typeof state.goal.target === "number") ? state.goal.target : null;
+    if (pts.length) {
+      var vs = pts.map(function(p){ return p.v; });
+      if (tg !== null) vs.push(tg);
+      lo = Math.floor(Math.min.apply(null, vs) - 1); hi = Math.ceil(Math.max.apply(null, vs) + 1);
+      if (hi - lo < 3) { hi = lo + 3; }
+    }
+    function X(i){ return L + i / 27 * pw; }
+    function Y(v){ return T + (1 - (v - lo) / (hi - lo)) * ph; }
+    if (pts.length) {
+      for (var k = 0; k <= 3; k++) {
+        var v = lo + (hi - lo) * k / 3, y = Y(v);
+        svg += '<line class="grid-l" x1="' + L + '" x2="' + (W - R) + '" y1="' + y.toFixed(1) + '" y2="' + y.toFixed(1) + '"/>';
+        svg += '<text class="ax mono" x="' + (L - 6) + '" y="' + (y + 3).toFixed(1) + '" text-anchor="end">' + (Math.round(v * 10) / 10) + '</text>';
+      }
+    } else {
+      svg += '<line class="grid-l" x1="' + L + '" x2="' + (W - R) + '" y1="' + (T + ph) + '" y2="' + (T + ph) + '"/>';
+    }
+    [0,7,14,21,27].forEach(function(i){
+      svg += '<text class="ax mono" x="' + X(i).toFixed(1) + '" y="' + (H - 10) + '" text-anchor="' + (i === 0 ? "start" : (i === 27 ? "end" : "middle")) + '">' + DAYS[i].md + '</text>';
+    });
+    if (pts.length && tg !== null) {
+      var ty = Y(tg);
+      svg += '<line class="tgt-l" x1="' + L + '" x2="' + (W - R) + '" y1="' + ty.toFixed(1) + '" y2="' + ty.toFixed(1) + '"/>';
+      svg += '<text class="tgt-t mono" x="' + (W - R) + '" y="' + (ty - 4).toFixed(1) + '" text-anchor="end">目標 ' + tg + '</text>';
+    }
+    if (pts.length > 1) {
+      svg += '<polyline class="ln" points="' + pts.map(function(p){ return X(p.i).toFixed(1) + "," + Y(p.v).toFixed(1); }).join(" ") + '"/>';
+    }
+    pts.forEach(function(p, idx){
+      var last = idx === pts.length - 1;
+      svg += '<circle class="pt' + (last ? " pt-last" : "") + '" cx="' + X(p.i).toFixed(1) + '" cy="' + Y(p.v).toFixed(1) + '" r="' + (last ? 4.5 : 3.5) + '"/>';
+    });
+    if (pts.length) {
+      var lp = pts[pts.length - 1], anchor = lp.i > 20 ? "end" : "middle";
+      svg += '<text class="lbl mono" x="' + X(lp.i).toFixed(1) + '" y="' + (Y(lp.v) - 10).toFixed(1) + '" text-anchor="' + anchor + '">' + lp.v + '</text>';
+    }
+    svg += '</svg>';
+    $("chart").innerHTML = svg;
+    if (!pts.length) $("chart-note").textContent = "体重を記録すると、ここに推移が出ます。毎朝同じ条件で測ると比べやすくなります。";
+    else if (pts.length === 1) $("chart-note").textContent = "最初の記録は " + pts[0].v + " kg です。2回以上記録すると線でつながります。";
+    else {
+      var diff = Math.round((pts[pts.length-1].v - pts[0].v) * 10) / 10;
+      $("chart-note").textContent = pts[0].md + " の " + pts[0].v + " kg から " + (diff > 0 ? "+" : "") + diff + " kg。体重は日によって上下するので、週単位で見るのがおすすめです。";
+    }
+  }
+  function renderMeals(){
+    var rows = [];
+    DAYS.forEach(function(d){ var l = state.logs[d.date]; if (l && (l.breakfast || l.lunch || l.dinner || l.snack || typeof l.weight === "number" || l.protein)) rows.push({ d:d, l:l }); });
+    rows.reverse();
+    $("meals").innerHTML = rows.slice(0, 5).map(function(x){
+      var parts = [];
+      if (x.l.breakfast) parts.push("朝：" + esc(x.l.breakfast));
+      if (x.l.lunch) parts.push("昼：" + esc(x.l.lunch));
+      if (x.l.dinner) parts.push("夜：" + esc(x.l.dinner));
+      if (x.l.snack) parts.push("間食：" + esc(x.l.snack));
+      return '<li><div class="hd2"><span class="mono">' + x.d.md + '（' + DOW[x.d.dow] + '）</span>' + (x.l.protein ? '<span class="pill ok">たんぱく質OK</span>' : '') +
+        (typeof x.l.weight === "number" ? '<span class="wt mono">' + x.l.weight + ' kg</span>' : '') + '</div>' +
+        (parts.length ? '<div class="body2">' + parts.join("　") + '</div>' : '') + '</li>';
+    }).join("") || '<li class="empty">まだ記録がありません。</li>';
+  }
+
+  // ===== 描画：目標体重までの見通し =====
+  // ペースの目安は根拠メモE5（米CDC：週に約0.5〜0.9kgのゆるやかな減量のほうが維持しやすい）を使う。
+  var PACE_LO = 0.5, PACE_HI = 0.9, GOAL_END = "2026-10-25", goalDirty = false;
+  function utc(s){ return Date.parse(s + "T00:00:00Z"); }
+  function dayDiff(a, b){ return Math.round((utc(b) - utc(a)) / 86400000); }
+  function addDays(s, n){ return fmt(new Date(utc(s) + n * 86400000)); }
+  function mdOf(s){ var p = s.split("-"); return Number(p[1]) + "/" + Number(p[2]); }
+  function r1(v){ return Math.round(v * 10) / 10; }
+  function renderGoal(){
+    var g = state.goal || {}, tgt = typeof g.target === "number" ? g.target : null, gdate = g.date || "";
+    if (!goalDirty) { $("gl-target").value = tgt !== null ? tgt : ""; $("gl-date").value = gdate; }
+    var pts = [];
+    DAYS.forEach(function(d){ var l = state.logs[d.date]; if (l && typeof l.weight === "number") pts.push({ date:d.date, v:l.weight }); });
+    var st = pts.length ? pts[0] : null, cur = pts.length ? pts[pts.length - 1] : null;
+    function tile(v, l){ return '<div class="kpi"><span class="kv mono">' + v + '</span><span class="kl">' + l + '</span></div>'; }
+    var tiles = "", lines = [], pct = null;
+    if (st) tiles += tile(r1(st.v) + ' kg', '開始時（' + mdOf(st.date) + '）');
+    if (cur) tiles += tile(r1(cur.v) + ' kg', '現在（' + mdOf(cur.date) + '）');
+    if (tgt !== null) tiles += tile(r1(tgt) + ' kg', '目標');
+    if (cur && tgt !== null) {
+      var rem = r1(cur.v - tgt), changed = r1(cur.v - st.v);
+      tiles += tile((rem > 0 ? rem : (rem < 0 ? "+" + r1(-rem) : "0")) + ' kg', rem > 0 ? '目標まで あと' : (rem < 0 ? '目標を超えた分' : '目標まで'));
+      var span = dayDiff(st.date, cur.date), pace = span >= 7 ? (st.v - cur.v) / (span / 7) : null;
+      if (rem > 0.05) {
+        var total = st.v - tgt;
+        pct = total > 0 ? Math.max(0, Math.min(100, Math.round((st.v - cur.v) / total * 100))) : 0;
+        if (pace === null) lines.push('<b>いまのペース</b>：7日以上の記録がたまると計算できます。');
+        else if (pace > 0.05) {
+          var wk = rem / pace, eta = addDays(cur.date, Math.ceil(wk * 7));
+          lines.push('<b>いまのペース</b>：週 ' + r1(pace) + ' kg。このまま続くと、あと約 ' + r1(wk) + ' 週（' + mdOf(eta) + ' ごろ）で目標に届きます。');
+        } else {
+          lines.push('<b>いまのペース</b>：週 ' + r1(pace) + ' kg。まだ体重は減っていません。体重は日ごとに揺れるので、もう少し記録をためて判断しましょう。');
+        }
+        var wLo = rem / PACE_HI, wHi = rem / PACE_LO;
+        lines.push('<b>ゆるやかな減量の目安</b>（週 ' + PACE_LO + '〜' + PACE_HI + ' kg・根拠E5）：あと約 ' + r1(wLo) + '〜' + r1(wHi) + ' 週（' + mdOf(addDays(cur.date, Math.ceil(wLo * 7))) + '〜' + mdOf(addDays(cur.date, Math.ceil(wHi * 7))) + ' ごろ）。');
+        var wl = dayDiff(cur.date, GOAL_END) / 7;
+        if (wl > 0) lines.push('<b>4週間の最終日（' + mdOf(GOAL_END) + '）の見込み</b>：週 ' + PACE_LO + '〜' + PACE_HI + ' kg なら ' + r1(cur.v - PACE_HI * wl) + '〜' + r1(cur.v - PACE_LO * wl) + ' kg（現在から −' + r1(PACE_LO * wl) + '〜−' + r1(PACE_HI * wl) + ' kg）。');
+        if (gdate) {
+          var left = dayDiff(TODAY, gdate);
+          if (left <= 0) lines.push('<b>目標日</b>：' + mdOf(gdate) + ' は過ぎています。目標日を見直してみましょう。');
+          else {
+            var need = rem / (left / 7), over = need > PACE_HI;
+            lines.push('<b>目標日（' + mdOf(gdate) + '）まで</b>：あと ' + left + ' 日。届くには週 ' + r1(need) + ' kg のペースが必要です。' + (over ? 'ゆるやかな目安（週' + PACE_HI + ' kg）を超えるため、目標日の見直しをおすすめします。' : 'ゆるやかな目安の範囲内です。'));
+            if (over) lines[lines.length - 1] = { warn:true, html:lines[lines.length - 1] };
+          }
+        }
+      } else if (rem < -0.05) {
+        pct = null;
+        lines.push('目標が現在の体重より高く設定されています。増量のペースの目安は根拠メモにないため、達成時期の計算はしていません。');
+      } else {
+        pct = 100; lines.push('<b>目標に到達しています。</b>お疲れさまでした。');
+      }
+      if (Math.abs(changed) >= 0.05) lines.push('開始時からの変化：' + (changed > 0 ? "+" : "") + changed + ' kg（' + mdOf(st.date) + ' → ' + mdOf(cur.date) + '）。');
+    } else if (cur && tgt === null) {
+      lines.push('目標体重を入力すると、達成までの週数と日付を計算します。');
+    } else if (!cur) {
+      lines.push(tgt === null ? '体重を記録して、目標体重を入力すると、達成までの見通しが数字で出ます。' : '体重を1回記録すると、目標までの残りと見通しが出ます。');
+    }
+    $("gl-tiles").innerHTML = tiles;
+    $("gl-bar").style.width = (pct === null ? 0 : pct) + "%";
+    $("gl-pct").textContent = pct === null ? "—" : pct + "%";
+    $("gl-lines").innerHTML = lines.map(function(x){
+      return typeof x === "string" ? '<li>' + x + '</li>' : '<li class="warn">' + x.html + '</li>';
+    }).join("");
+    $("gl-note").textContent = "体重は日ごとに揺れるため、週単位の傾向で見てください。ペースの目安は根拠E5（米CDC：週に約0.5〜0.9kgのゆるやかな減量が維持しやすい）です。医療上の判断ではありません。";
+  }
+
+  function renderAll(){
+    renderTop(); renderKpi(); renderGate(); renderMission(); renderStaff(); renderLogForm(); renderChart(); renderMeals(); renderGoal(); renderGrid(); renderReviewMeta(); renderLog(); renderEvidence(); renderSync();
+  }
+
+  // ===== 操作 =====
+  function record(status){
+    var date = state.selected;
+    saveDay(date, { status:status, note:$("note-input").value.trim(), at:Date.now() }).then(function(){
+      toast(status === "done" ? "打刻しました。おつかれさまでした" : status === "mini" ? "5分だけも、ちゃんと1回です" : "お休みを記録しました。次に戻れれば大丈夫です");
+    });
+  }
+  $("b-done").addEventListener("click", function(){ record("done"); });
+  $("b-mini").addEventListener("click", function(){ record("mini"); });
+  $("b-skip").addEventListener("click", function(){ record("skip"); });
+  $("b-undo").addEventListener("click", function(){ saveDay(state.selected, null).then(function(){ toast("記録を取り消しました"); }); });
+  ["n-weight","n-b","n-l","n-d","n-s"].forEach(function(id){ $(id).addEventListener("input", function(){ logDirty = true; }); });
+  $("n-protein").addEventListener("click", function(){
+    var on = $("n-protein").getAttribute("aria-pressed") === "true";
+    $("n-protein").setAttribute("aria-pressed", String(!on)); logDirty = true;
+  });
+  $("n-save").addEventListener("click", function(){
+    var date = state.selected, wt = $("n-weight").value.trim(), n = wt === "" ? null : Number(wt);
+    if (n !== null && (isNaN(n) || n < 20 || n > 300)) { toast("体重は20〜300の範囲で入力してください"); return; }
+    var rec = { weight:n, breakfast:$("n-b").value.trim(), lunch:$("n-l").value.trim(), dinner:$("n-d").value.trim(), snack:$("n-s").value.trim(),
+      protein:$("n-protein").getAttribute("aria-pressed") === "true", at:Date.now() };
+    var empty = n === null && !rec.breakfast && !rec.lunch && !rec.dinner && !rec.snack && !rec.protein;
+    logDirty = false;
+    saveLog(date, empty ? null : rec).then(function(){ toast(empty ? "空の記録は保存しません" : "食事と体重を保存しました"); });
+  });
+  ["gl-target","gl-date"].forEach(function(id){ $(id).addEventListener("input", function(){ goalDirty = true; }); });
+  $("gl-save").addEventListener("click", function(){
+    var tv = $("gl-target").value.trim(), n = tv === "" ? null : Number(tv), dv = $("gl-date").value || null;
+    if (n !== null && (isNaN(n) || n < 20 || n > 300)) { toast("目標体重は20〜300の範囲で入力してください"); return; }
+    store.goal = { target:n, date:dv, at:Date.now() }; goalDirty = false;
+    touch(); toast("目標を保存しました");
+  });
+  $("n-clear").addEventListener("click", function(){
+    logDirty = false;
+    saveLog(state.selected, null).then(function(){ toast("この日の食事と体重の記録を消しました"); });
+  });
+  $("tc").addEventListener("click", function(e){
+    var b = e.target.closest("[data-date]"); if (!b) return;
+    state.selected = b.getAttribute("data-date"); state.week = BYDATE[state.selected].w; noteFor = null; logDirty = false;
+    renderAll();
+  });
+  $("wk-tabs").addEventListener("click", function(e){
+    var b = e.target.closest("[data-w]"); if (!b) return;
+    state.week = Number(b.getAttribute("data-w")); formDirty = false; renderAll();
+  });
+  ["effort","next"].forEach(function(id){
+    $(id).addEventListener("click", function(e){
+      var b = e.target.closest("[data-v]"); if (!b) return;
+      setChip(id, b.getAttribute("data-v")); formDirty = true;
+    });
+  });
+  ["r-hard","r-weight","r-memo"].forEach(function(id){ $(id).addEventListener("input", function(){ formDirty = true; }); });
+  $("r-save").addEventListener("click", function(){
+    var w = state.week, prev = state.reviews[w] || {};
+    var wt = $("r-weight").value.trim();
+    var rec = { effort: getChip("effort") ? Number(getChip("effort")) : null, hard: $("r-hard").value.trim(), weight: wt === "" ? null : Number(wt),
+      memo: $("r-memo").value.trim(), next: getChip("next") || prev.next || null, at: Date.now() };
+    formDirty = false;
+    saveReview(w, rec).then(function(){ toast("第" + w + "週の振り返りを保存しました"); });
+  });
+  $("gate").addEventListener("click", function(e){
+    var b = e.target.closest("[data-next]"); if (!b) return;
+    var w = Number($("gate").getAttribute("data-week")); if (!w) return;
+    var prev = state.reviews[w] || {};
+    var rec = { effort: prev.effort != null ? prev.effort : null, hard: prev.hard || "", weight: prev.weight != null ? prev.weight : null, memo: prev.memo || "", next: b.getAttribute("data-next"), at: Date.now() };
+    formDirty = false;
+    saveReview(w, rec).then(function(){ toast("決裁しました：" + NEXT_LABEL[rec.next]); });
+  });
+
+  // ===== 根拠メモ（ウェブ検索で内容を確認できたもの） =====
+  // ウェブ検索で内容を確認できた根拠（2026/9/25 時点）。
+  var EVIDENCE = [
+    { id:"E1", topic:"筋トレの頻度", src:"WHO 身体活動・座位行動ガイドライン 2020",
+      note:"成人は、主要な筋群を使う中強度以上の筋力トレーニングを週2日以上行うことを推奨。座っている時間を減らし、軽い強度でも身体活動に置き換えると健康上の利益がある。",
+      url:"https://pmc.ncbi.nlm.nih.gov/articles/PMC7719906/" },
+    { id:"E2", topic:"有酸素運動の量", src:"WHO 身体活動・座位行動ガイドライン 2020",
+      note:"成人は、中強度の有酸素運動を週150〜300分、または高強度を週75〜150分（または同等の組み合わせ）を推奨。",
+      url:"https://pmc.ncbi.nlm.nih.gov/articles/PMC7719906/" },
+    { id:"E3", topic:"日本の身体活動の目安", src:"厚生労働省 健康づくりのための身体活動・運動ガイド2023（成人）",
+      note:"歩行またはそれと同等以上の身体活動を1日60分以上（約8,000歩以上に相当）、息が弾む運動を週60分以上、筋力トレーニングを週2〜3日行うことを推奨。",
+      url:"https://kennet.mhlw.go.jp/information/information/exercise/s-00-002.html" },
+    { id:"E4", topic:"たんぱく質の量と筋肉", src:"Morton ら 2018 メタ分析（49件・1,863人）",
+      note:"筋トレ中のたんぱく質補給は、筋力と筋量の増加を高めた。摂取量が約1.6g/kg/日を超えても、除脂肪量の増加はそれ以上高まらなかった。年齢が高いほど効果は小さく、トレーニング経験が長いほど大きかった。",
+      url:"https://academicworks.cuny.edu/le_pubs/209/" },
+    { id:"E5", topic:"減量のペースと筋肉の維持", src:"ISSN ポジションスタンド 2017 ／ 米CDC",
+      note:"ISSN：減量の速度が遅いほうが、除脂肪量を保ちやすい（特に体が引き締まっている人）。筋トレは、エネルギー制限中の筋肉の維持に役立つ。CDC：週に約1〜2ポンド（約0.5〜0.9kg）のゆるやかで安定した減量のほうが、体重を維持しやすい。",
+      url:"https://link.springer.com/article/10.1186/s12970-017-0174-y" }
+  ];
+  function evidenceText(){
+    return EVIDENCE.map(function(e){ return e.id + "（" + e.topic + "／" + e.src + "）：" + e.note; }).join("\n");
+  }
+  function ctxText(){
+    var lines = [];
+    DAYS.forEach(function(d){
+      if (d.date > TODAY) return;
+      var r = state.days[d.date], l = state.logs[d.date], m = MENUS[d.dow];
+      var row = d.md + "（" + DOW[d.dow] + "）" + m.title + "：";
+      if (m.kind === "rest") row += "休養日"; else row += r ? (STATUS_LABEL[r.status] + (r.note ? "「" + r.note + "」" : "")) : "記録なし";
+      if (l) {
+        var p = [];
+        if (typeof l.weight === "number") p.push("体重" + l.weight + "kg");
+        if (l.breakfast) p.push("朝:" + l.breakfast); if (l.lunch) p.push("昼:" + l.lunch);
+        if (l.dinner) p.push("夜:" + l.dinner); if (l.snack) p.push("間食:" + l.snack);
+        if (l.protein) p.push("たんぱく質OK");
+        if (p.length) row += " ／ " + p.join(" ");
+      }
+      lines.push(row);
+    });
+    var revs = [];
+    for (var w = 1; w <= 4; w++) {
+      var v = state.reviews[w]; if (!v) continue;
+      revs.push("第" + w + "週の振り返り：きつさ" + (v.effort || "未入力") + (v.hard ? "、気になった点「" + v.hard + "」" : "") + (v.memo ? "、メモ「" + v.memo + "」" : "") + (v.next ? "、来週の方針＝" + NEXT_LABEL[v.next] : ""));
+    }
+    var antxt = "";
+    var gl = state.goal && typeof state.goal.target === "number" ? "\n【目標体重】" + state.goal.target + "kg" + (state.goal.date ? "（目標日 " + state.goal.date + "）" : "（目標日なし）") : "\n【目標体重】未設定";
+    return "【今日】" + TODAY + gl + antxt + "\n【日ごとの記録】\n" + (lines.join("\n") || "まだ記録はありません") + "\n【週の振り返り】\n" + (revs.join("\n") || "まだありません");
+  }
+
+  // ===== Claudeに相談：記録をコピー =====
+  function claudeText(){
+    return "以下は、私の自宅トレーニング（2026/9/28〜10/25の4週間、マンションで静音、器具はインクラインベンチ・ダンベル・ヨガマットのみ、ゴムなし）の記録です。\n" +
+      "運動科学・栄養学の科学的根拠に沿って、来週の調整案（メニュー・ダンベルの重さ・食事・休養）を、やわらかい口調で教えてください。助言ごとに根拠を添え、根拠が確認できていない話は、その旨も書いてください。\n\n" +
+      "【確認済みの根拠】\n" + evidenceText() + "\n\n" + ctxText();
+  }
+  $("cp-copy").addEventListener("click", function(){
+    var text = claudeText(), ta = $("cp-text");
+    $("cp-wrap").hidden = false; ta.value = text;
+    var done = function(){ toast("記録をコピーしました。Claudeのチャットに貼りつけてください"); };
+    var fallback = function(){ ta.focus(); ta.select(); toast("コピーできませんでした。下の欄を全選択してコピーしてください"); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fallback); else fallback();
+  });
+
+  // ===== 同期の設定 =====
+  function fillSyncForm(){
+    $("sy-owner").value = syncCfg.owner; $("sy-repo").value = syncCfg.repo || "body-company-data"; $("sy-path").value = syncCfg.path || "data.json";
+    $("sy-token").value = ""; $("sy-token").placeholder = syncCfg.token ? "設定済み（変更するときだけ入力）" : "github_pat_…";
+  }
+  $("sy-save").addEventListener("click", function(){
+    var owner = $("sy-owner").value.trim(), repo = $("sy-repo").value.trim(), path = $("sy-path").value.trim() || "data.json", token = $("sy-token").value.trim() || syncCfg.token;
+    if (!owner || !repo || !token) { toast("ユーザー名・リポジトリ名・トークンを入力してください"); return; }
+    syncCfg = { owner:owner, repo:repo, path:path.replace(/^\/+/, ""), token:token }; cfgSave(); fillSyncForm();
+    runSync().then(function(){ if (syncInfo.st === "ok") toast("同期しました"); });
+  });
+  $("sy-now").addEventListener("click", function(){
+    if (!syncConfigured()) { toast("先に同期の設定を保存してください"); return; }
+    runSync().then(function(){ if (syncInfo.st === "ok") toast("同期しました"); });
+  });
+  $("sy-clear").addEventListener("click", function(){
+    syncCfg = { owner:"", repo:"", path:"data.json", token:"" }; cfgSave(); syncInfo = { st:"off", at:null, msg:"" }; fillSyncForm(); renderSync();
+    toast("同期を解除しました。記録はこの端末に残っています");
+  });
+
+  function safeUrl(u){ return typeof u === "string" && /^https:\/\//.test(u) ? esc(u) : ""; }
+  function fmtAt(v){
+    var t = typeof v === "number" ? v : Date.parse(v);
+    if (!t) return "";
+    try { return new Date(t).toLocaleDateString("ja-JP", { timeZone:"Asia/Tokyo", month:"numeric", day:"numeric" }); } catch(e){ return ""; }
+  }
+  function renderEvidence(){
+    var items = EVIDENCE;
+    $("ev").innerHTML = items.map(function(e){
+      var u = safeUrl(e.url);
+      return '<li><div class="eh"><span class="eid mono">' + esc(e.id) + '</span><b>' + esc(e.topic) + '</b><span class="es">' + esc(e.src) + '</span></div>' +
+        '<div>' + esc(e.note) + '</div>' + (u ? '<a href="' + u + '" target="_blank" rel="noopener">出典を開く</a>' : '') + '</li>';
+    }).join("");
+    $("ev-updated").textContent = "2026/9/25 にウェブ検索で確認";
+  }
+
+  // ===== 起動 =====
+  state.selected = TODAY < DAYS[0].date ? DAYS[0].date : (TODAY > DAYS[27].date ? DAYS[27].date : TODAY);
+  state.week = BYDATE[state.selected].w;
+  lsLoad();
+  rebuildState();
+  fillSyncForm();
+  renderAll();
+
+  if (syncConfigured()) runSync();
+  document.addEventListener("visibilitychange", function(){ if (document.visibilityState === "visible" && syncConfigured()) runSync(); });
+  window.addEventListener("online", function(){ if (syncConfigured()) runSync(); });
+  window.addEventListener("offline", function(){ if (syncConfigured()) { syncInfo = { st:"offline", at:syncInfo.at, msg:"" }; renderSync(); } });
+  setInterval(function(){ if (document.visibilityState === "visible" && syncConfigured()) runSync(); }, 120000);
+
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function(){ navigator.serviceWorker.register("./sw.js").catch(function(){ }); });
+  }
+})();
+</script>
+</body>
+</html>
+
+{
+  "name": "しょうたのボディ改造カンパニー",
+  "short_name": "ボディ改造",
+  "description": "4週間の静音トレーニングを、打刻・食事と体重・振り返りで管理するアプリ",
+  "lang": "ja",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#eef1f5",
+  "theme_color": "#d9662c",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
+
+// オフラインでも開けるように、アプリ本体をこの端末に保存する。
+// 更新があれば、次に開いたときに新しい版へ切り替わる。
+const CACHE = "body-company-v1";
+const ASSETS = ["./", "./index.html", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png", "./icon-maskable-512.png", "./apple-touch-icon.png"];
+
+self.addEventListener("install", (e) => {
+  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ASSETS)).then(() => self.skipWaiting()));
+});
+
+self.addEventListener("activate", (e) => {
+  e.waitUntil(
+    caches.keys()
+      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
+      .then(() => self.clients.claim())
+  );
+});
+
+self.addEventListener("fetch", (e) => {
+  const req = e.request;
+  if (req.method !== "GET") return;
+  const url = new URL(req.url);
+  if (url.origin !== location.origin) return; // GitHub API・フォントなどは、そのまま通信する
+  e.respondWith(
+    caches.match(req, { ignoreSearch: true }).then((cached) => {
+      const network = fetch(req)
+        .then((res) => {
+          if (res && res.ok) {
+            const copy = res.clone();
+            caches.open(CACHE).then((c) => c.put(req, copy));
+          }
+          return res;
+        })
+        .catch(() => cached || (req.mode === "navigate" ? caches.match("./index.html") : undefined));
+      return cached || network;
+    })
+  );
+});
