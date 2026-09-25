@@ -319,6 +319,7 @@
     .m-title{ font-size:21px; }
     .tcp .panel-head::before{ left:-11px; } .tcp .panel-head::after{ right:-11px; }
   }
+  .bubble .src{ display:block; margin-top:7px; padding-top:6px; border-top:1px dotted var(--line); font-size:10.5px; line-height:1.5; color:var(--text-dim); letter-spacing:.02em; }
 </style>
 <style>
   :root{ box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px); }
@@ -941,9 +942,31 @@
     { id:"train", role:"トレーナー", person:"姿勢 正",   init:"姿", color:"#2c5f8a" },
     { id:"nutri", role:"栄養士",   person:"配膳 恵",   init:"配", color:"#d9662c" }
   ];
+  // 各ひとことの根拠。E1〜E5は、下の「根拠メモ」でウェブ検索により内容を確認したもの。GENは、広く共有されている一般的な考え方で、出典は未確認。
+  var EV_SHORT = { E1:"WHO 2020", E2:"WHO 2020", E3:"厚生労働省 2023", E4:"Morton ら 2018", E5:"ISSN 2017／米CDC" };
+  function evLine(list){
+    if (!list || !list.length) return "";
+    var confirmed = list.filter(function(k){ return k !== "GEN"; }).map(function(k){ return k + " " + EV_SHORT[k]; });
+    var parts = [];
+    if (confirmed.length) parts.push("根拠：" + confirmed.join("・") + "（確認済み）");
+    if (list.indexOf("GEN") >= 0) parts.push("一般的な考え方（出典は未確認）");
+    return parts.join("　／　");
+  }
+  function timeMin(t){
+    var m = /(\d+):(\d+)\D+(\d+):(\d+)/.exec(t || ""); if (!m) return 0;
+    return (parseInt(m[3], 10) * 60 + parseInt(m[4], 10)) - (parseInt(m[1], 10) * 60 + parseInt(m[2], 10));
+  }
+  function weightTrend(){
+    var pts = [];
+    Object.keys(state.logs).sort().forEach(function(k){ var l = state.logs[k]; if (l && typeof l.weight === "number") pts.push([k, l.weight]); });
+    if (!pts.length) return null;
+    var f = pts[0], l = pts[pts.length - 1];
+    var days = Math.round((Date.parse(l[0] + "T00:00:00Z") - Date.parse(f[0] + "T00:00:00Z")) / 86400000);
+    return { latest:l[1], rate: days >= 7 ? (l[1] - f[1]) / days * 7 : null };
+  }
   function staffMessages(){
     var before = TODAY < DAYS[0].date, after = TODAY > DAYS[27].date;
-    var s = stats(), msg = {};
+    var s = stats(), msg = {}, ev = {};
     var d = state.selected ? BYDATE[state.selected] : null;
     var today = BYDATE[TODAY];
     var nx = nextTraining(before ? "0000-00-00" : TODAY);
@@ -958,6 +981,12 @@
     } else if (today) {
       msg.sec = "今日は " + MENUS[today.dow].time.split("–")[0] + " から「" + MENUS[today.dow].title + "」の予定です。";
     }
+    if (!before && !after) {
+      var wk = currentWeek(), sd = 0, sp = 0;
+      weekDays(wk).forEach(function(x){ if (MENUS[x.dow].kind === "strength") { sp++; if (statusOf(x.date) === "done") sd++; } });
+      msg.sec += " 今週の筋トレ（フル）は " + sd + " / " + sp + " 日です。筋トレの目安は、WHOが週2日以上、厚生労働省が週2〜3日です。" + (sd >= 2 ? "目安の週2日に届いています。" : "");
+      ev.sec = ["E1", "E3"];
+    }
     var lastMissed = false;
     for (var i = DAYS.length - 1; i >= 0; i--) {
       var dd = DAYS[i]; if (!trainDay(dd) || dd.date >= TODAY) continue;
@@ -967,27 +996,47 @@
     else if (after) msg.coach = "28日間、本当にお疲れさまでした。続けたこと自体が、いちばんの成果です。";
     else if (s.streak >= 5) msg.coach = "連続 " + s.streak + " 回、いい流れです。ここまで積み上げたことを、ぜひ自分でも認めてあげてください。";
     else if (s.streak >= 1) msg.coach = "連続 " + s.streak + " 回です。無理のないペースで、次も一緒にいきましょう。";
-    else if (lastMissed && s.elapsed > 0) msg.coach = "前回はお休みでしたね。大丈夫です。次の予定に戻れれば、それで十分です。";
-    else msg.coach = "最初の1回が、いちばんの山です。今日はウォームアップだけでも、出勤として数えますよ。";
+    else if (lastMissed && s.elapsed > 0) { msg.coach = "前回はお休みでしたね。大丈夫です。WHOの目安は「週に2日以上」の筋トレなので、週の中で戻れれば十分です。"; ev.coach = ["E1"]; }
+    else { msg.coach = "最初の1回が、いちばんの山です。今日はウォームアップだけでも、出勤として数えます。座っている時間を軽い運動に置き換えるだけでも、健康上の利益があるとされています。"; ev.coach = ["E1"]; }
     var mk = d ? MENUS[d.dow] : MENUS[1];
     var trainTips = { A:"膝はつま先と同じ向きに。かかとは浮かさず、足裏全体で床を踏みます。", B:"肩がすくまないように。肘は体から少し離して、ゆっくり下ろします。", C:"フォームが崩れたら回数を減らして大丈夫です。丁寧さを優先しましょう。" };
-    if (mk.kind === "cardio") msg.train = "動きを大きくするより、回数を増やすほうが静かです。足はそっと下ろしましょう。";
-    else if (mk.kind === "rest") msg.train = "休養日は、股関節と肩まわりを軽く伸ばす程度で十分です。";
-    else msg.train = trainTips[mk.key];
-    msg.nutri = mk.kind === "strength" ? "運動後は、たんぱく質（卵・鶏肉・納豆など）を意識して食べると回復しやすくなります。水分もこまめに。"
-              : mk.kind === "cardio" ? "有酸素の前後は、水分を少しずつ。食べすぎを取り戻そうとしなくて大丈夫です。"
-              : "休養日は、たんぱく質を毎食ひとつ入れるだけで十分です。";
+    if (mk.kind === "cardio") {
+      var cm = 0; weekDays(before || after ? 1 : currentWeek()).forEach(function(x){ if (MENUS[x.dow].kind === "cardio") cm += timeMin(MENUS[x.dow].time); });
+      msg.train = "動きを大きくするより、回数を増やすほうが静かです。足はそっと下ろしましょう。1週間の有酸素の予定は合計 " + cm + " 分です。厚生労働省は、息が弾む運動を週60分以上としています。";
+      ev.train = ["E3", "GEN"];
+    } else if (mk.kind === "rest") { msg.train = "休養日は、股関節と肩まわりを軽く伸ばす程度で十分です。"; ev.train = ["GEN"]; }
+    else { msg.train = trainTips[mk.key]; ev.train = ["GEN"]; }
+    var wt = weightTrend();
+    var base = mk.kind === "strength" ? "運動後は、たんぱく質（卵・鶏肉・納豆など）を意識して食べると回復しやすくなります。水分もこまめに。"
+             : mk.kind === "cardio" ? "有酸素の前後は、水分を少しずつ。食べすぎを取り戻そうとしなくて大丈夫です。"
+             : "休養日は、たんぱく質を毎食ひとつ入れるだけで十分です。";
+    msg.nutri = base; ev.nutri = ["GEN"];
+    if (wt) {
+      msg.nutri += " 筋トレ中のたんぱく質は、約1.6g/kg/日で効果が頭打ちになるとされています。直近の体重 " + wt.latest + "kg なら、目安は約" + Math.round(wt.latest * 1.6) + "g/日です。";
+      ev.nutri.push("E4");
+      if (wt.rate !== null) {
+        var r = Math.round(wt.rate * 10) / 10, a = Math.abs(r);
+        if (r <= -0.9) { msg.nutri += " 体重は週あたり約" + a + "kg 減っています。米CDCの目安（週0.5〜0.9kg）より速めで、ISSNは、減量が遅いほうが筋肉を保ちやすいとしています。"; ev.nutri.push("E5"); }
+        else if (r <= -0.5) { msg.nutri += " 体重は週あたり約" + a + "kg 減っていて、米CDCの目安（週0.5〜0.9kg）の範囲です。"; ev.nutri.push("E5"); }
+        else { msg.nutri += " 体重の変化は週あたり " + (r > 0 ? "+" : "") + r + "kg です。日ごとに揺れるので、週単位で見ていきましょう。"; }
+      }
+    } else if (!before && !after) {
+      msg.nutri += " 体重を記録すると、たんぱく質の目安（約1.6g/kg/日）を計算できます。";
+      ev.nutri.push("E4");
+    }
     var tl = state.logs[TODAY];
     var hasMeal = tl && (tl.breakfast || tl.lunch || tl.dinner || tl.snack);
     if (!before && !after && !hasMeal) msg.nutri += " 今日の食事は、ざっくりで大丈夫なので記録してみましょう。";
     else if (!before && !after && tl && tl.protein) msg.nutri += " 今日はたんぱく質を意識できていますね。";
+    msg.ev = ev;
     return msg;
   }
   function renderStaff(){
     var m = staffMessages();
     $("staff").innerHTML = STAFF.map(function(p){
+      var src = evLine(m.ev[p.id]);
       return '<div class="st"><div class="av" style="background:' + p.color + '">' + p.init + '</div><div class="st-body">' +
-        '<div class="st-name"><b>' + p.person + '</b><span>' + p.role + '</span></div><div class="bubble">' + esc(m[p.id]) + '</div></div></div>';
+        '<div class="st-name"><b>' + p.person + '</b><span>' + p.role + '</span></div><div class="bubble">' + esc(m[p.id]) + (src ? '<span class="src">' + esc(src) + '</span>' : '') + '</div></div></div>';
     }).join("");
   }
 
