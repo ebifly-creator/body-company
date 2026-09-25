@@ -333,6 +333,24 @@
   @media (max-width:520px){ .meal-head,.meal-row{ grid-template-columns:38px 1fr 80px; } .kcal-sum{ display:grid; grid-template-columns:1fr 1fr; } }
 
   /* ---- バーチャルジム（PCの画面だけ） ---- */
+  /* ---- 種目のやり方 ---- */
+  .items li.has-ex{ flex-direction:column; gap:0; padding:0; }
+  .ex-row{ display:flex; justify-content:space-between; align-items:center; gap:14px; padding:10px 2px; }
+  .ex-name{ display:flex; align-items:center; flex-wrap:wrap; gap:6px 10px; }
+  .ex-btn{ font-size:11px; line-height:1; padding:5px 10px; border:1px solid var(--line); border-radius:999px; background:var(--surface-alt); color:var(--text); cursor:pointer; }
+  .ex-btn:hover{ border-color:var(--accent-2); }
+  .ex-btn[aria-expanded="true"]{ background:var(--ink, #17232b); color:var(--on-ink, #f2f6f5); border-color:transparent; }
+  .ex-more{ margin:0 0 10px; padding:12px 14px 13px; background:var(--surface-alt); border-radius:8px; font-size:12.5px; line-height:1.75; }
+  .ex-more[hidden]{ display:none; }
+  .ex-more h4{ margin:0 0 4px; font-size:11.5px; letter-spacing:.06em; color:var(--text-dim); font-weight:700; }
+  .ex-more ol{ margin:0 0 10px; padding-left:1.4em; list-style:decimal; }
+  .items .ex-more li{ display:list-item; justify-content:initial; padding:2px 0; border:0; font-size:12.5px; }
+  .ex-links{ display:flex; flex-wrap:wrap; gap:8px; }
+  .ex-links a{ display:inline-flex; align-items:center; gap:6px; padding:7px 12px; border-radius:8px; border:1px solid var(--line); background:var(--surface); color:var(--text); text-decoration:none; font-weight:700; font-size:12px; }
+  .ex-links a:hover{ border-color:var(--accent-2); }
+  .ex-links a::before{ content:""; width:0; height:0; border-left:8px solid var(--accent); border-top:5px solid transparent; border-bottom:5px solid transparent; }
+  .ex-note{ margin:8px 0 0; font-size:11px; color:var(--text-dim); }
+
   #gym{ display:none; }
   @media (min-width:1100px){ #gym{ display:block; } }
   .gym-body{ padding:14px 14px 16px; }
@@ -379,6 +397,15 @@
   @keyframes g-sheen{ 0%{ transform:translateX(-240px) } 60%,100%{ transform:translateX(320px) } }
   @keyframes g-blink{ 0%,49%{ opacity:1 } 50%,100%{ opacity:0 } }
   @keyframes g-scr{ 0%,100%{ transform:scaleX(.55) } 50%{ transform:scaleX(1) } }
+
+  .gym-wrap{ position:relative; }
+  @media (max-width:899px){
+    .gym-body{ padding:10px; }
+    .gym-bub{ position:relative; left:auto !important; top:auto !important; transform:none; width:auto; max-width:none; min-width:0; margin-top:10px; font-size:12px; opacity:1; box-shadow:none; }
+    .gym-bub::after{ display:none; }
+    .gym-strip{ grid-template-columns:1fr 1fr; gap:8px; }
+    .gym-chip small{ display:none; }
+  }
   #gym .bob{ animation:g-breath 3.4s ease-in-out infinite; }
   #gym .p-coach .bob{ animation:g-bounce .7s ease-in-out infinite; }
   #gym .p-coach .walk{ animation:g-walk 14s linear infinite; }
@@ -466,9 +493,11 @@
   <div class="panel" id="gym" data-mode="train">
     <div class="panel-head"><h2>バーチャルジム</h2><span class="sub">PCの画面だけの特別ルーム。AI社員をクリックすると、ひとことを話します</span></div>
     <div class="panel-body gym-body">
-      <div class="gym-stage" id="gym-stage" role="img" aria-label="AI社員4人が働くバーチャルジムのイラスト">
-        <div id="gym-svg-wrap" style="width:100%;height:100%"></div>
-        <div id="gym-hits" aria-hidden="true"></div>
+      <div class="gym-wrap">
+        <div class="gym-stage" id="gym-stage" role="img" aria-label="AI社員4人が働くバーチャルジムのイラスト">
+          <div id="gym-svg-wrap" style="width:100%;height:100%"></div>
+          <div id="gym-hits" aria-hidden="true"></div>
+        </div>
         <div class="gym-bub" id="gym-bub" role="status" aria-live="polite"></div>
       </div>
       <div class="gym-strip" id="gym-strip"></div>
@@ -1011,9 +1040,60 @@
   }
 
   // ===== 描画：ミッション =====
+
+  // ===== 種目のやり方（要点と、動画を探すリンク） =====
+  var EXDB = {
+    "自重スクワット":["足は肩幅くらいに開く","お尻を後ろに引くようにしゃがむ","膝はつま先と同じ向きに。背中は丸めない"],
+    "ヒップスラスト（ダンベルなし）":["仰向けで膝を立てる","かかとで床を押して、お尻を持ち上げる","上でお尻を軽く締める。腰は反らしすぎない"],
+    "脚を前後・左右に軽く振る":["壁や椅子に手を添えて立つ","反動をつけず、小さな振り幅から始める"],
+    "ゴブレットスクワット":["ダンベルを胸の前で縦に持つ","3秒かけて、ゆっくりしゃがむ","胸を張って、膝はつま先と同じ向きに"],
+    "ルーマニアンデッドリフト":["膝は軽く曲げたまま、動かさない","お尻を後ろに引いて、上体を倒す","ダンベルは脚に沿わせる。背中はまっすぐ"],
+    "ブルガリアンスクワット":["後ろ足をベンチに乗せる","前足は少し前に置く","上体を少し前に倒し、真下にしずむ"],
+    "ヒップスラスト":["ベンチに肩甲骨のあたりを預ける","ダンベルは骨盤の上に置く","お尻を締めて持ち上げ、上で1秒止める"],
+    "プランク":["肘は肩の真下につく","頭からかかとまで一直線にする","お腹に軽く力を入れる。腰が落ちない範囲で"],
+    "その場早歩き":["腕を振りながら足踏みする","足音を立てないよう、静かに"],
+    "腕回し（前・後ろ）":["肩から大きな円を描く","ゆっくり、前と後ろの両方向へ"],
+    "壁プッシュアップ":["壁から腕の長さくらい離れて立つ","体を一直線に保ったまま、胸を壁へ近づける"],
+    "肩甲骨を寄せる動き":["胸を張る","肩甲骨を背中の中央へ寄せる。肩はすくめない"],
+    "体をひねるストレッチ":["足は肩幅。骨盤は正面に向けたまま","上半身だけをゆっくりひねる。反動はつけない"],
+    "ゆっくり足踏み":["腕を軽く振りながら足踏みする","音を立てないよう、静かに"],
+    "インクラインダンベルプレス":["ベンチに背中と肩甲骨をつける","肘は体から少し開く。胸の高さまでゆっくり下ろす","手首は立てたまま、真上に押す"],
+    "ワンハンドロウ（ベンチに手をつく）":["片手をベンチについて、背中を平らにする","肘を腰に向けて引く。肩はすくめない","反動はつけず、ゆっくり下ろす"],
+    "ダンベルショルダープレス":["肘は耳の少し前。手首は立てる","真上に押し上げる。腰は反らさない","ゆっくり下ろす"],
+    "アームカール":["肘は体の横に固定する","反動をつけず持ち上げ、3秒で下ろす"],
+    "トライセプスエクステンション":["肘を頭の横に固定して、天井に向ける","肘だけを曲げ伸ばしする。肘は開かない"],
+    "バックランジ（左右交互）":["一歩後ろへ、静かに引く","前の膝がつま先より出すぎないように","上体は立てたまま"],
+    "ゆっくりマウンテンクライマー":["腕立ての姿勢。手は肩の下","膝を胸へ引く。左右交互にゆっくり","腰を上げすぎない。床を蹴らない"],
+    "ステップバーピー（ジャンプなし）":["しゃがんで、手を床につく","片足ずつ後ろへ下げて、プランクの姿勢に","片足ずつ戻って立つ。ジャンプはしない"],
+    "バイシクルクランチ":["仰向けで、手は頭の後ろに軽く添える","反対側の肘と膝を近づける","首を引っ張らない。ゆっくり交互に"],
+    "スクワット＋腕を頭上へ":["スクワットでしゃがむ","立ち上がりながら腕を頭上へ。肩はすくめない"],
+    "ゆっくり歩いてストレッチ":["呼吸を整えながら歩く","気持ちよく伸びる範囲で、大きく息を吐く"],
+    "ダンベルスラスター":["スクワットでしゃがむ","立ち上がる力で、ダンベルを頭上へ押す","静かにするため、ゆっくり行う"],
+    "リバースランジ":["一歩後ろへ、静かに引く","前の膝がつま先より出すぎないように","上体は立てたまま"],
+    "ダンベルロウ（前かがみ）":["股関節から上体を倒し、背中はまっすぐ","肘を後ろへ引く。反動はつけない"],
+    "デッドバグ":["仰向けで腕を天井へ。膝は90度に曲げる","反対側の腕と脚をゆっくり伸ばす","腰が床から浮かないように"],
+    "外を早歩き":["少し息が弾むくらいの速さで","姿勢を伸ばして、腕を振る"],
+    "全身のゆるいストレッチ":["痛みが出ない範囲で伸ばす","呼吸を止めない。ひとつ20〜30秒くらい"]
+  };
+  var EXQ = { "ヒップスラスト（ダンベルなし）":"ヒップスラスト 自重", "脚を前後・左右に軽く振る":"レッグスイング ストレッチ", "ワンハンドロウ（ベンチに手をつく）":"ワンハンドダンベルロウ ベンチ", "バックランジ（左右交互）":"バックランジ", "ステップバーピー（ジャンプなし）":"ステップバーピー ジャンプなし", "スクワット＋腕を頭上へ":"スクワット 腕を上げる", "ダンベルロウ（前かがみ）":"ベントオーバーダンベルロウ", "外を早歩き":"ウォーキング 正しい歩き方", "全身のゆるいストレッチ":"全身ストレッチ 10分", "ゆっくり足踏み":"足踏み 有酸素 静か", "体をひねるストレッチ":"体幹ひねり ストレッチ", "ゆっくり歩いてストレッチ":"クールダウン ストレッチ", "その場早歩き":"その場足踏み 早歩き" };
+  function exUrl(base, name){ return base + encodeURIComponent((EXQ[name] || name) + " やり方"); }
   function itemsHtml(list){
-    return list.map(function(it){ return '<li><span>' + esc(it[0]) + '</span><span class="amt mono">' + esc(it[1]) + '</span></li>'; }).join("");
+    return list.map(function(it){
+      var cues = EXDB[it[0]];
+      if (!cues) return '<li><span>' + esc(it[0]) + '</span><span class="amt mono">' + esc(it[1]) + '</span></li>';
+      var id = "ex" + Math.random().toString(36).slice(2, 8);
+      return '<li class="has-ex"><div class="ex-row"><span class="ex-name"><span>' + esc(it[0]) + '</span><button type="button" class="ex-btn" data-ex="' + id + '" aria-expanded="false" aria-controls="' + id + '">やり方を見る</button></span><span class="amt mono">' + esc(it[1]) + '</span></div>' +
+        '<div class="ex-more" id="' + id + '" hidden><h4>ポイント</h4><ol>' + cues.map(function(c){ return '<li>' + esc(c) + '</li>'; }).join("") + '</ol>' +
+        '<div class="ex-links"><a href="' + exUrl("https://www.youtube.com/results?search_query=", it[0]) + '" target="_blank" rel="noopener noreferrer">動画で見る（YouTube）</a>' +
+        '<a href="' + exUrl("https://www.google.com/search?tbm=isch&q=", it[0]) + '" target="_blank" rel="noopener noreferrer">画像で見る</a></div>' +
+        '<p class="ex-note">ポイントは、一般的なフォームの考え方です（出典は未確認）。動画は検索結果が開きます。見て、やりやすいものを選んでください。痛みが出たら、すぐにやめて大丈夫です。</p></div></li>';
+    }).join("");
   }
+  document.addEventListener("click", function(ev){
+    var b = ev.target && ev.target.closest ? ev.target.closest(".ex-btn") : null; if (!b) return;
+    var box = document.getElementById(b.getAttribute("data-ex")); if (!box) return;
+    var open = box.hidden; box.hidden = !open; b.setAttribute("aria-expanded", String(open)); b.textContent = open ? "閉じる" : "やり方を見る";
+  });
   function renderMission(){
     var d = BYDATE[state.selected], m = MENUS[d.dow];
     $("m-date").textContent = d.md + "（" + DOW[d.dow] + "）  第" + d.w + "週 " + (d.i + 1) + "日目";
