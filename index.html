@@ -320,6 +320,17 @@
     .tcp .panel-head::before{ left:-11px; } .tcp .panel-head::after{ right:-11px; }
   }
   .bubble .src{ display:block; margin-top:7px; padding-top:6px; border-top:1px dotted var(--line); font-size:10.5px; line-height:1.5; color:var(--text-dim); letter-spacing:.02em; }
+  .meal-head{ display:grid; grid-template-columns:44px 1fr 92px; gap:8px; margin:0 0 4px; font-size:11px; font-weight:700; color:var(--text-dim); letter-spacing:.06em; }
+  .meal-head span:last-child{ text-align:right; padding-right:4px; }
+  .meal-row{ grid-template-columns:44px 1fr 92px; }
+  .meal-row input.kc{ text-align:right; font-family:var(--f-dot); letter-spacing:.02em; }
+  .kcal-sum{ margin:14px 0 4px; padding:12px 14px; border:1px dashed var(--line); border-radius:8px; gap:10px 28px; }
+  .kcal-sum .kpi{ min-width:0; }
+  .kcal-sum .kv{ font-size:24px; }
+  .kcal-sum .kv small{ font-size:11px; color:var(--text-dim); font-family:var(--f-body); letter-spacing:0; }
+  .meals .hd2 .kc{ margin-left:auto; color:var(--accent); }
+  .meals .hd2 .kc + .wt{ margin-left:12px; }
+  @media (max-width:520px){ .meal-head,.meal-row{ grid-template-columns:38px 1fr 80px; } .kcal-sum{ display:grid; grid-template-columns:1fr 1fr; } }
 </style>
 <style>
   :root{ box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px); }
@@ -435,10 +446,13 @@
             <div class="field"><label for="n-weight">体重（kg）</label><input type="number" id="n-weight" step="0.1" min="20" max="300" inputmode="decimal" placeholder="例：68.4"></div>
             <button class="chip" id="n-protein" aria-pressed="false">毎食たんぱく質をとれた</button>
           </div>
-          <div class="meal-row"><label for="n-b">朝</label><input type="text" id="n-b" maxlength="120" placeholder="例：納豆ごはん、味噌汁"></div>
-          <div class="meal-row"><label for="n-l">昼</label><input type="text" id="n-l" maxlength="120"></div>
-          <div class="meal-row"><label for="n-d">夜</label><input type="text" id="n-d" maxlength="120"></div>
-          <div class="meal-row"><label for="n-s">間食</label><input type="text" id="n-s" maxlength="120"></div>
+          <div class="meal-head" aria-hidden="true"><span></span><span>食べたもの</span><span>カロリー</span></div>
+          <div class="meal-row"><label for="n-b">朝</label><input type="text" id="n-b" maxlength="120" placeholder="例：納豆ごはん、味噌汁"><input type="number" class="kc" id="n-bk" min="0" max="5000" step="1" inputmode="numeric" placeholder="kcal" aria-label="朝のカロリー（kcal）"></div>
+          <div class="meal-row"><label for="n-l">昼</label><input type="text" id="n-l" maxlength="120"><input type="number" class="kc" id="n-lk" min="0" max="5000" step="1" inputmode="numeric" placeholder="kcal" aria-label="昼のカロリー（kcal）"></div>
+          <div class="meal-row"><label for="n-d">夜</label><input type="text" id="n-d" maxlength="120"><input type="number" class="kc" id="n-dk" min="0" max="5000" step="1" inputmode="numeric" placeholder="kcal" aria-label="夜のカロリー（kcal）"></div>
+          <div class="meal-row"><label for="n-s">間食</label><input type="text" id="n-s" maxlength="120"><input type="number" class="kc" id="n-sk" min="0" max="5000" step="1" inputmode="numeric" placeholder="kcal" aria-label="間食のカロリー（kcal）"></div>
+          <div class="kcal-sum kpi-stats" id="kcal-sum"></div>
+          <p class="chart-note" id="kcal-note">カロリーは、食べた量から見積もった目安で大丈夫です。1日の摂取カロリーの目標値は、根拠を確認できていないため、ここでは出していません。</p>
           <div class="act"><button class="btn primary" id="n-save">この日の記録を保存</button><button class="btn ghost" id="n-clear">この日の記録を消す</button></div>
         </div>
         <div>
@@ -1025,9 +1039,10 @@
       ev.nutri.push("E4");
     }
     var tl = state.logs[TODAY];
-    var hasMeal = tl && (tl.breakfast || tl.lunch || tl.dinner || tl.snack);
+    var hasMeal = tl && (tl.breakfast || tl.lunch || tl.dinner || tl.snack || hasKcal(tl));
     if (!before && !after && !hasMeal) msg.nutri += " 今日の食事は、ざっくりで大丈夫なので記録してみましょう。";
     else if (!before && !after && tl && tl.protein) msg.nutri += " 今日はたんぱく質を意識できていますね。";
+    if (!before && !after && hasKcal(tl)) msg.nutri += " 今日ここまでの記録は " + fmtN(kcalTotal(tl)) + " kcal です。";
     msg.ev = ev;
     return msg;
   }
@@ -1121,10 +1136,12 @@
     if (logFor !== d.date || !logDirty) {
       $("n-weight").value = typeof r.weight === "number" ? r.weight : "";
       $("n-b").value = r.breakfast || ""; $("n-l").value = r.lunch || ""; $("n-d").value = r.dinner || ""; $("n-s").value = r.snack || "";
+      $("n-bk").value = typeof r.kb === "number" ? r.kb : ""; $("n-lk").value = typeof r.kl === "number" ? r.kl : "";
+      $("n-dk").value = typeof r.kd === "number" ? r.kd : ""; $("n-sk").value = typeof r.ks === "number" ? r.ks : "";
       $("n-protein").setAttribute("aria-pressed", String(!!r.protein));
       logFor = d.date; logDirty = false;
     }
-    ["n-weight","n-b","n-l","n-d","n-s","n-protein","n-save"].forEach(function(id){ $(id).disabled = future; });
+    ["n-weight","n-b","n-l","n-d","n-s","n-bk","n-lk","n-dk","n-sk","n-protein","n-save"].forEach(function(id){ $(id).disabled = future; });
     $("n-clear").disabled = !state.logs[d.date];
   }
   function renderChart(){
@@ -1178,17 +1195,40 @@
       $("chart-note").textContent = pts[0].md + " の " + pts[0].v + " kg から " + (diff > 0 ? "+" : "") + diff + " kg。体重は日によって上下するので、週単位で見るのがおすすめです。";
     }
   }
+  function fmtN(n){ return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
+  function kcalTotal(l){
+    var t = 0; if (!l) return 0;
+    ["kb","kl","kd","ks"].forEach(function(k){ if (typeof l[k] === "number") t += l[k]; });
+    return t;
+  }
+  function hasKcal(l){ return !!l && ["kb","kl","kd","ks"].some(function(k){ return typeof l[k] === "number"; }); }
+  function mealStr(label, text, kcal){
+    if (!text && typeof kcal !== "number") return "";
+    return label + "：" + (text || "") + (typeof kcal === "number" ? (text ? "（" : "") + fmtN(kcal) + "kcal" + (text ? "）" : "") : "");
+  }
+  function kcalInput(id){ var v = $(id).value.trim(); if (v === "") return null; var n = Number(v); return (isNaN(n) || n < 0 || n > 5000) ? NaN : Math.round(n); }
+  function renderKcal(){
+    var ids = ["n-bk","n-lk","n-dk","n-sk"], day = 0, any = false;
+    ids.forEach(function(id){ var v = kcalInput(id); if (v !== null && !isNaN(v)) { day += v; any = true; } });
+    var cutoff = Date.parse(TODAY + "T00:00:00Z") - 6 * 86400000, sum = 0, cnt = 0;
+    DAYS.forEach(function(d){
+      var t = Date.parse(d.date + "T00:00:00Z"); if (d.date > TODAY || t < cutoff) return;
+      var l = state.logs[d.date]; if (hasKcal(l)) { sum += kcalTotal(l); cnt++; }
+    });
+    function tile(v, l){ return '<div class="kpi sm"><span class="kv mono">' + v + '</span><span class="kl">' + l + '</span></div>'; }
+    $("kcal-sum").innerHTML = tile(any ? fmtN(day) + '<small> kcal</small>' : "—", "この日の合計（記録した分）") +
+      tile(cnt ? fmtN(Math.round(sum / cnt)) + '<small> kcal</small>' : "—", "直近7日の平均" + (cnt ? "（" + cnt + "日分）" : ""));
+  }
   function renderMeals(){
     var rows = [];
-    DAYS.forEach(function(d){ var l = state.logs[d.date]; if (l && (l.breakfast || l.lunch || l.dinner || l.snack || typeof l.weight === "number" || l.protein)) rows.push({ d:d, l:l }); });
+    DAYS.forEach(function(d){ var l = state.logs[d.date]; if (l && (l.breakfast || l.lunch || l.dinner || l.snack || hasKcal(l) || typeof l.weight === "number" || l.protein)) rows.push({ d:d, l:l }); });
     rows.reverse();
     $("meals").innerHTML = rows.slice(0, 5).map(function(x){
       var parts = [];
-      if (x.l.breakfast) parts.push("朝：" + esc(x.l.breakfast));
-      if (x.l.lunch) parts.push("昼：" + esc(x.l.lunch));
-      if (x.l.dinner) parts.push("夜：" + esc(x.l.dinner));
-      if (x.l.snack) parts.push("間食：" + esc(x.l.snack));
+      [["朝","breakfast","kb"],["昼","lunch","kl"],["夜","dinner","kd"],["間食","snack","ks"]].forEach(function(m){ var t = mealStr(m[0], x.l[m[1]], x.l[m[2]]); if (t) parts.push(esc(t)); });
+      var kt = kcalTotal(x.l);
       return '<li><div class="hd2"><span class="mono">' + x.d.md + '（' + DOW[x.d.dow] + '）</span>' + (x.l.protein ? '<span class="pill ok">たんぱく質OK</span>' : '') +
+        (hasKcal(x.l) ? '<span class="kc mono">' + fmtN(kt) + ' kcal</span>' : '') +
         (typeof x.l.weight === "number" ? '<span class="wt mono">' + x.l.weight + ' kg</span>' : '') + '</div>' +
         (parts.length ? '<div class="body2">' + parts.join("　") + '</div>' : '') + '</li>';
     }).join("") || '<li class="empty">まだ記録がありません。</li>';
@@ -1262,7 +1302,7 @@
   }
 
   function renderAll(){
-    renderTop(); renderKpi(); renderGate(); renderMission(); renderStaff(); renderLogForm(); renderChart(); renderMeals(); renderGoal(); renderGrid(); renderReviewMeta(); renderLog(); renderEvidence(); renderSync();
+    renderTop(); renderKpi(); renderGate(); renderMission(); renderStaff(); renderLogForm(); renderKcal(); renderChart(); renderMeals(); renderGoal(); renderGrid(); renderReviewMeta(); renderLog(); renderEvidence(); renderSync();
   }
 
   // ===== 操作 =====
@@ -1278,7 +1318,7 @@
   $("b-mini").addEventListener("click", function(){ record("mini"); });
   $("b-skip").addEventListener("click", function(){ record("skip"); });
   $("b-undo").addEventListener("click", function(){ saveDay(state.selected, null).then(function(){ toast("記録を取り消しました"); }); });
-  ["n-weight","n-b","n-l","n-d","n-s"].forEach(function(id){ $(id).addEventListener("input", function(){ logDirty = true; }); });
+  ["n-weight","n-b","n-l","n-d","n-s","n-bk","n-lk","n-dk","n-sk"].forEach(function(id){ $(id).addEventListener("input", function(){ logDirty = true; renderKcal(); }); });
   $("n-protein").addEventListener("click", function(){
     var on = $("n-protein").getAttribute("aria-pressed") === "true";
     $("n-protein").setAttribute("aria-pressed", String(!on)); logDirty = true;
@@ -1286,11 +1326,14 @@
   $("n-save").addEventListener("click", function(){
     var date = state.selected, wt = $("n-weight").value.trim(), n = wt === "" ? null : Number(wt);
     if (n !== null && (isNaN(n) || n < 20 || n > 300)) { toast("体重は20〜300の範囲で入力してください"); return; }
+    var ks = [kcalInput("n-bk"), kcalInput("n-lk"), kcalInput("n-dk"), kcalInput("n-sk")];
+    if (ks.some(function(v){ return v !== null && isNaN(v); })) { toast("カロリーは、0〜5000の数字で入力してください"); return; }
     var rec = { weight:n, breakfast:$("n-b").value.trim(), lunch:$("n-l").value.trim(), dinner:$("n-d").value.trim(), snack:$("n-s").value.trim(),
+      kb:ks[0], kl:ks[1], kd:ks[2], ks:ks[3],
       protein:$("n-protein").getAttribute("aria-pressed") === "true", at:Date.now() };
-    var empty = n === null && !rec.breakfast && !rec.lunch && !rec.dinner && !rec.snack && !rec.protein;
+    var empty = n === null && !rec.breakfast && !rec.lunch && !rec.dinner && !rec.snack && ks.every(function(v){ return v === null; }) && !rec.protein;
     logDirty = false;
-    saveLog(date, empty ? null : rec).then(function(){ toast(empty ? "空の記録は保存しません" : "食事と体重を保存しました"); });
+    saveLog(date, empty ? null : rec).then(function(){ toast(empty ? "空の記録は保存しません" : "食事・カロリー・体重を保存しました"); });
   });
   ["gl-target","gl-date"].forEach(function(id){ $(id).addEventListener("input", function(){ goalDirty = true; }); });
   $("gl-save").addEventListener("click", function(){
@@ -1368,8 +1411,8 @@
       if (l) {
         var p = [];
         if (typeof l.weight === "number") p.push("体重" + l.weight + "kg");
-        if (l.breakfast) p.push("朝:" + l.breakfast); if (l.lunch) p.push("昼:" + l.lunch);
-        if (l.dinner) p.push("夜:" + l.dinner); if (l.snack) p.push("間食:" + l.snack);
+        [["朝","breakfast","kb"],["昼","lunch","kl"],["夜","dinner","kd"],["間食","snack","ks"]].forEach(function(m){ var t = mealStr(m[0], l[m[1]], l[m[2]]); if (t) p.push(t.replace("：", ":")); });
+        if (hasKcal(l)) p.push("カロリー合計" + fmtN(kcalTotal(l)) + "kcal（記録した分）");
         if (l.protein) p.push("たんぱく質OK");
         if (p.length) row += " ／ " + p.join(" ");
       }
