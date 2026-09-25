@@ -1,3 +1,4 @@
+[index.html](https://github.com/user-attachments/files/32657481/index.html)
 <img width="180" height="180" alt="apple-touch-icon" src="https://github.com/user-attachments/assets/6805283d-ac30-4739-9ebc-77d2e343fd75" />
 
 <!doctype html>
@@ -47,9 +48,46 @@
       --line:#2b3552;
       --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
       --on-accent:#1a1208;
-      color-scheme:dark;
+      color-scheme:dark;// オフラインでも開けるように、アプリ本体をこの端末に保存する。
+// 更新があれば、次に開いたときに新しい版へ切り替わる。
+const CACHE = "body-company-v2";
+const ASSETS = ["./", "./index.html", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png", "./icon-maskable-512.png", "./apple-touch-icon.png"];
+
+self.addEventListener("install", (e) => {
+  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ASSETS)).then(() => self.skipWaiting()));
+});
+
+self.addEventListener("activate", (e) => {
+  e.waitUntil(
+    caches.keys()
+      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
+      .then(() => self.clients.claim())
+  );
+});
+
+self.addEventListener("fetch", (e) => {
+  const req = e.request;
+  if (req.method !== "GET") return;
+  const url = new URL(req.url);
+  if (url.origin !== location.origin) return; // GitHub API・フォントなどは、そのまま通信する
+  e.respondWith(
+    caches.match(req, { ignoreSearch: true }).then((cached) => {
+      const network = fetch(req)
+        .then((res) => {
+          if (res && res.ok) {
+            const copy = res.clone();
+            caches.open(CACHE).then((c) => c.put(req, copy));
+          }
+          return res;
+        })
+        .catch(() => cached || (req.mode === "navigate" ? caches.match("./index.html") : undefined));
+      return cached || network;
+    })
+  );
+});
+
     }
-  }
+  }[sw.js](https://github.com/user-attachments/files/32657486/sw.js)
   :root[data-theme="dark"]{
     --bg:#0d1220; --surface:#161d2e; --surface-alt:#1f2740;
     --text:#e7ebf5; --text-dim:#98a2ba;
